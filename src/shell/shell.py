@@ -53,7 +53,7 @@ class Shell:
     def run(self):
         print('================= SSD Shell Started! =================')
         while True:
-            user_input = input(">> ").strip()
+            user_input = self._get_user_input()
             args = user_input.split()
 
             if args[0] == 'write':
@@ -61,6 +61,7 @@ class Shell:
             elif args[0] == 'read':
                 self.read(args[1])
             elif args[0] == 'exit':
+                print('=============== SSD Shell Terminated!  ===============')
                 break
             elif args[0] == 'help':
                 self.help()
@@ -70,6 +71,9 @@ class Shell:
                 self.full_read()
             else:
                 print("INVALID COMMAND")
+
+    def _get_user_input(self):
+        return input(">> ").strip()
 
 
 if __name__ == "__main__":

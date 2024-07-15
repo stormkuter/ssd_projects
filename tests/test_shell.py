@@ -1,3 +1,5 @@
+import io
+import sys
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -48,3 +50,15 @@ class TestShell(TestCase):
     def test_help(self, mock_help):
         self.sut.help()
         self.sut.help.assert_called_once()
+
+    @patch.object(Shell, '_get_user_input', return_value='exit')
+    def test_run_exit_success(self, mock_write):
+        output = io.StringIO()
+        sys.stdout = output
+
+        self.sut.run()
+
+        self.assertTrue('Terminated' in output.getvalue())
+        sys.stdout = sys.__stdout__
+
+
