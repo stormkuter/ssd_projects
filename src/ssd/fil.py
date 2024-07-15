@@ -8,7 +8,6 @@ MAX_ADDRESS = 100
 
 class FlashInterfaceLayer:
     def __init__(self):
-        # .tmp/nand.txt, result.txt 에 유효한 정보가 있다면 읽어서 가져옴
         self.__flash_map = {}
         self.__lazy_update = False
 
@@ -27,6 +26,8 @@ class FlashInterfaceLayer:
         if not self.__lazy_update:
             # update nand.txt
             pass
+
+        # return result
 
     def read_lba(self, lba):
         if not self.__lazy_update:
