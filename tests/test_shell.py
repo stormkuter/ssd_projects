@@ -45,6 +45,6 @@ class TestShell(TestCase):
         self.assertEqual(1, self.sut.full_read())
 
     @patch.object(Shell, 'help', return_value=1)
-    def test_help(self, mock_full_read):
+    def test_help(self, mock_help):
         self.sut.help()
         self.sut.help.assert_called_once()

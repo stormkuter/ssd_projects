@@ -17,7 +17,7 @@ class WriteCommand(ICommand):
 
     def execute(self) -> int:
         # system call write
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py w {self.__lba} {self.__val}")
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py W {self.__lba} {self.__val}")
         return ssd_sp.returncode
 
 
@@ -27,7 +27,7 @@ class ReadCommand(ICommand):
 
     def execute(self) -> int:
         # system call read
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py r {self.__lba}")
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py R {self.__lba}")
         result_file = open("result.txt", "r")
         ret = result_file.readline()
         print(ret)
@@ -42,7 +42,7 @@ class FullWriteCommand(ICommand):
     def execute(self) -> int:
         # system call full wrtie
         for lba in range(MAX_LBA_LEN):
-            ssd_sp = subprocess.run(f"python -m ssd/hill.py w {lba} {self.__val}")
+            ssd_sp = subprocess.run(f"python -m ssd/hill.py W {lba} {self.__val}")
             if ssd_sp == -1:
                 return -1
         return 0
@@ -55,7 +55,7 @@ class FullReadCommand(ICommand):
     def execute(self) -> int:
         # system call full read
         for lba in range(MAX_LBA_LEN):
-            ssd_sp = subprocess.run(f"python -m ssd/hill.py r {lba}")
+            ssd_sp = subprocess.run(f"python -m ssd/hill.py R {lba}")
             if ssd_sp == -1:
                 return -1
             result_file = open("result.txt", "r")
