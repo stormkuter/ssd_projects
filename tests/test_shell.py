@@ -1,5 +1,9 @@
 from unittest import TestCase
 
+from src.shell import Shell
+
 
 class TestShell(TestCase):
-    pass
+    def test_create_Shell(self):
+        sut = Shell()
+        self.assertIsNotNone(sut)
