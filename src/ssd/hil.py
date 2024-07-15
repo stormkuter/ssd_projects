@@ -1,6 +1,11 @@
 import enum
 from src.ssd.fil import FlashInterfaceLayer
 
+MIN_VALUE = 0
+MAX_VALUE = 2 ** 32 - 1
+MIN_ADDRESS = 0
+MAX_ADDRESS = 99
+
 
 class OpCode(enum.Enum):
     READ = 0
@@ -17,6 +22,7 @@ class OpCode(enum.Enum):
 
 
 class HostInterfaceLayer:
+
     def __init__(self):
         self.__fil = FlashInterfaceLayer()
 
@@ -40,12 +46,23 @@ class HostInterfaceLayer:
             self.__validation_of_value(args[1])
 
     def __validation_of_address(self, address):
-        if not isinstance(address, int) or (0 > address) or (address >= 100):
+        if not isinstance(address, int) or (MIN_ADDRESS > address) or (address > MAX_ADDRESS):
             raise ValueError(f"입력된 주소값이 잘못 되었습니다.: {address}")
 
-    def __validation_of_value(self, value):
-        print(value, type(value))
-        min_4byte = 0
-        max_4byte = 2 ** 32 - 1
-        if not isinstance(value, int) or (min_4byte >= value) or (value >= max_4byte):
+    def __validation_of_value(self, value: str):
+        if len(value) != 10 or value[:2] != "0x":
+            raise ValueError(f"입력된 값의 형식이 잘못 되었습니다.: {value}")
+        result_value = 0
+        for i in range(2, 10):
+            result_value += self.__to_int(value[i]) * 16 ** (9-i)
+        if (MIN_VALUE > result_value) or (result_value > MAX_VALUE):
             raise ValueError(f"입력된 값이 잘못 되었습니다.: {value}")
+
+    def __to_int(self, spell: str):
+        spell_dict = {"A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15}
+        if spell.isdigit():
+            return int(spell)
+        elif spell in spell_dict:
+            return spell_dict[spell]
+        else:
+            raise ValueError(f"입력된 값의 형식이 잘못 되었습니다.")
