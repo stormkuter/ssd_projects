@@ -2,6 +2,8 @@ import os
 
 FOLDER_PATH = os.path.join(os.path.dirname(__file__), 'data')
 NAND_FILE_PATH = os.path.join(FOLDER_PATH, './nand.txt')
+INIT_VALUE = '0x00000000'
+MAX_ADDRESS = 100
 
 
 class FlashInterfaceLayer:
@@ -15,9 +17,9 @@ class FlashInterfaceLayer:
 
         if not os.path.exists(NAND_FILE_PATH):
             with open(NAND_FILE_PATH, "w") as f:
-                for i in range(99):
-                    f.write(f'{"00000000"}\n')
-                f.write(f'{"00000000"}')
+                for i in range(MAX_ADDRESS - 1):
+                    f.write(f'{INIT_VALUE}[2:]\n')
+                f.write(f'{INIT_VALUE[2:]}')
 
     def write_lba(self, lba, value):
         self.__flash_map[lba] = value

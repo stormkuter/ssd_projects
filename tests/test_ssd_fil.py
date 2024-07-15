@@ -26,7 +26,6 @@ class MyTestCase(unittest.TestCase):
         if not pl.Path(path).resolve().is_file():
             raise AssertionError("nand.txt File does not exist: %s" % str(path))
 
-        print(pl.Path(path).read_text().split('\n'))
         self.assertEqual(len(pl.Path(path).read_text().split('\n')), 100)
 
     @skip
