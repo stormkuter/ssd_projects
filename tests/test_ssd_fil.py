@@ -5,7 +5,7 @@ from unittest import skip
 
 from src.ssd.fil import FlashInterfaceLayer
 
-FOLDER_PATH = '../src/ssd/data'
+FOLDER_PATH = os.path.join(os.path.dirname(__file__), '../src/ssd/data')
 NAND_FILE_PATH = os.path.join(FOLDER_PATH, './nand.txt')
 
 

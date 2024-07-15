@@ -10,7 +10,7 @@ class FlashInterfaceLayer:
     def __init__(self):
         self.__flash_map = {}
         self.__lazy_update = False
-
+        print(FOLDER_PATH)
         # .data/nand.txt, result.txt 에 유효한 정보가 있다면 읽어서 가져옴
         if not os.path.exists(FOLDER_PATH):
             os.mkdir(FOLDER_PATH)
