@@ -1,6 +1,5 @@
 import os
 
-
 INIT_VALUE = '0x00000000'
 MAX_ADDRESS = 100
 
@@ -26,7 +25,7 @@ class FlashInterfaceLayer:
         if not os.path.exists(NAND_FILE_PATH):
             with open(NAND_FILE_PATH, "w") as f:
                 for i in range(MAX_ADDRESS - 1):
-                    f.write(f'{INIT_VALUE}[2:]\n')
+                    f.write(f'{INIT_VALUE[2:]}\n')
                 f.write(f'{INIT_VALUE[2:]}')
 
         if not os.path.exists(RESULT_FILE_PATH):
