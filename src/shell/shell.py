@@ -28,10 +28,22 @@ class Shell:
         pass
 
     def full_write(self, val):
-        pass
+        self.__command = create_shell_command('fullwrite', val)
+        return_code = self.__command.execute()
+
+        if not return_code == 0:
+            pass
+
+        return return_code
 
     def full_read(self):
-        pass
+        self.__command = create_shell_command('fullread')
+        return_code = self.__command.execute()
+
+        if not return_code == 0:
+            pass
+
+        return return_code
 
     def run(self):
         print('================= SSD Shell Started! =================')
