@@ -1,7 +1,6 @@
 import os
 
-FOLDER_PATH = os.path.join(os.path.dirname(__file__), 'data')
-NAND_FILE_PATH = os.path.join(FOLDER_PATH, './nand.txt')
+
 INIT_VALUE = '0x00000000'
 MAX_ADDRESS = 100
 
@@ -11,6 +10,15 @@ class FlashInterfaceLayer:
         self.__flash_map = {}
         self.__lazy_update = False
 
+        if os.environ.get('ENV', 'prod') != 'test':
+            FOLDER_PATH = os.path.join(os.path.dirname(__file__), 'data')
+            NAND_FILE_PATH = os.path.join(FOLDER_PATH, './nand.txt')
+            RESULT_FILE_PATH = os.path.join(FOLDER_PATH, './result.txt')
+        else:
+            FOLDER_PATH = os.path.join(os.path.dirname(__file__), '../../tests/data')
+            NAND_FILE_PATH = os.path.join(FOLDER_PATH, './nand.txt')
+            RESULT_FILE_PATH = os.path.join(FOLDER_PATH, './result.txt')
+
         # .data/nand.txt, result.txt 에 유효한 정보가 있다면 읽어서 가져옴
         if not os.path.exists(FOLDER_PATH):
             os.mkdir(FOLDER_PATH)
@@ -19,6 +27,10 @@ class FlashInterfaceLayer:
             with open(NAND_FILE_PATH, "w") as f:
                 for i in range(MAX_ADDRESS - 1):
                     f.write(f'{INIT_VALUE}[2:]\n')
+                f.write(f'{INIT_VALUE[2:]}')
+
+        if not os.path.exists(RESULT_FILE_PATH):
+            with open(RESULT_FILE_PATH, "w") as f:
                 f.write(f'{INIT_VALUE[2:]}')
 
     def write_lba(self, lba, value):
