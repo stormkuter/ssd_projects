@@ -1,0 +1,23 @@
+name: PR Test
+ 
+on:
+  pull_request:
+    branches: [ master ] # master branch에 PR을 보낼 때 실행
+ 
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+ 
+      - name: setup python
+        uses: actions/setup-python@2
+        with:
+          python-version: 3.x
+  
+      # test를 실행한다
+      - name: Test run
+        run: |
+        export PYTHONPATH=$(pwd)
+        pytest
