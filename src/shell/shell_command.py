@@ -20,8 +20,13 @@ class WriteCommand(ICommand):
 
 
 class ReadCommand(ICommand):
-    pass
+    def __init__(self, lba):
+        self.__lba = lba
 
+    def execute(self) -> int:
+        # system call read
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py r {self.__lba}")
+        return ssd_sp.returncode
 
 class FullWriteCommand(ICommand):
     pass
