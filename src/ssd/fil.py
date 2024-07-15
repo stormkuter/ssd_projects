@@ -24,7 +24,6 @@ class FlashInterfaceLayer:
     def write_lba(self, lba, value):
         self.__flash_map[lba] = value
         if not self.__lazy_update:
-            # update nand.txt
             pass
 
         # return result
