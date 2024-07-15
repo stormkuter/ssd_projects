@@ -1,17 +1,19 @@
-import subprocess
+from src.shell.shell_command import create_shell_command
 
 
 class Shell:
 
     def __init__(self):
-        pass
+        self.__command = None
 
-    def write(self, lba, val):
-        # system call wrtie
-        ssd_sp = subprocess.run(f"ssd_cmd w {lba} {val}")
+    def write(self, lba, val) -> int:
+        self.__command = create_shell_command('write', lba, val)
+        return_code = self.__command.execute()
 
-        ssd_sp.returncode
-        # error 처리
+        if not return_code == 0:
+            pass
+
+        return return_code
 
     def read(self, lba, val):
         pass
@@ -19,10 +21,8 @@ class Shell:
     def help(self, lba, val):
         pass
 
-
     def full_write(self, val):
         pass
-
 
     def full_read(self):
         pass
