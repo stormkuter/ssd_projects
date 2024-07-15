@@ -15,8 +15,14 @@ class Shell:
 
         return return_code
 
-    def read(self, lba, val):
-        pass
+    def read(self, lba):
+        self.__command = create_shell_command('read', lba)
+        return_code = self.__command.execute()
+
+        if not return_code == 0:
+            pass
+
+        return return_code
 
     def help(self, lba, val):
         pass
@@ -36,7 +42,7 @@ class Shell:
             if args[0] == 'write':
                 self.write(args[1], args[2])
             elif args[0] == 'read':
-                self.read(args[1], args[2])
+                self.read(args[1])
             elif args[0] == 'exit':
                 break
             elif args[0] == 'help':
