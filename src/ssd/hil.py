@@ -25,20 +25,28 @@ class HostInterfaceLayer:
 
     def get_command(self, command: str, *args, **kwargs):
         op_code = OpCode.get_op_code_by(command)
-        self.__validation_of_address(args[0])
+        self.__validation_args(args)
         if op_code == OpCode.READ:
             self.__fil.read_lba(args[0])
         elif op_code == OpCode.WRITE:
-            self.__validation_of_value(args[1])
             self.__fil.write_lba(args[0], args[1])
+
+    def __validation_args(self, *args):
+        if len(args) == 0:
+            raise ValueError("입력 주소 및 값이 없습니다.")
+
+        self.__validation_of_address(args[0])
+
+        if len(args) == 2:
+            self.__validation_of_address(args[1])
 
     def __validation_of_address(self, address):
         if not isinstance(address, int) or (0 >= address) or (address >= 100):
-            raise ValueError("입력된 주소값이 잘못 되었습니다.")
+            raise ValueError(f"입력된 주소값이 잘못 되었습니다.: {address}")
 
     def __validation_of_value(self, value):
         print(value, type(value))
         min_4byte = 0
         max_4byte = 2 ** 32 - 1
         if not isinstance(value, int) or (min_4byte >= value) or (value >= max_4byte):
-            raise ValueError("입력된 값이 잘못 되었습니다.")
+            raise ValueError(f"입력된 값이 잘못 되었습니다.: {value}")
