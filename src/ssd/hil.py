@@ -31,17 +31,16 @@ class HostInterfaceLayer:
         elif op_code == OpCode.WRITE:
             self.__fil.write_lba(args[0], args[1])
 
-    def __validation_args(self, *args):
+    def __validation_args(self, args):
         if len(args) == 0:
             raise ValueError("입력 주소 및 값이 없습니다.")
-
         self.__validation_of_address(args[0])
 
         if len(args) == 2:
-            self.__validation_of_address(args[1])
+            self.__validation_of_value(args[1])
 
     def __validation_of_address(self, address):
-        if not isinstance(address, int) or (0 >= address) or (address >= 100):
+        if not isinstance(address, int) or (0 > address) or (address >= 100):
             raise ValueError(f"입력된 주소값이 잘못 되었습니다.: {address}")
 
     def __validation_of_value(self, value):
