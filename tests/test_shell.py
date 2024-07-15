@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from src.shell import Shell, WriteCommand
+from src.shell.shell import Shell
+from src.shell.shell_command import WriteCommand
 
 TEST_LBA = 3
 TEST_VAL = 0xAAAABBBB
