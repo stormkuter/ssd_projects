@@ -91,3 +91,23 @@ class TestShell(TestCase):
         self.assertTrue('Invalid Command' in output.getvalue())
         sys.stdout = sys.__stdout__
 
+
+    @patch.object(Shell, '_get_user_input', side_effect=['fullwrite', 'exit'])
+    def test_run_invalid_command_fullwrite(self, mock_write):
+        output = io.StringIO()
+        sys.stdout = output
+
+        self.sut.run()
+
+        self.assertTrue('Invalid Command' in output.getvalue())
+        sys.stdout = sys.__stdout__
+
+    @patch.object(Shell, '_get_user_input', side_effect=['fullread 3', 'exit'])
+    def test_run_invalid_command_fullread(self, mock_write):
+        output = io.StringIO()
+        sys.stdout = output
+
+        self.sut.run()
+
+        self.assertTrue('Invalid Command' in output.getvalue())
+        sys.stdout = sys.__stdout__
