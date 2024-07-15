@@ -1,17 +1,30 @@
 import subprocess
 
 
+class WriteCommand:
+    def __init__(self, lba, val):
+        self.__lba = lba
+        self.__val = val
+
+    def execute(self) -> int:
+        # system call wrtie
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py w {self.__lba} {self.__val}")
+        return ssd_sp.returncode
+
+
 class Shell:
 
     def __init__(self):
-        pass
+        self.__command = None
 
-    def write(self, lba, val):
-        # system call wrtie
-        ssd_sp = subprocess.run(f"ssd_cmd w {lba} {val}")
+    def write(self, lba, val) -> int:
+        self.__command = WriteCommand(lba, val)
+        return_code = self.__command.execute()
 
-        ssd_sp.returncode
-        # error 처리
+        if not return_code == 0:
+            pass
+
+        return return_code
 
     def read(self, lba, val):
         pass
