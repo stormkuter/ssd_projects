@@ -1,6 +1,8 @@
 import subprocess
 from abc import ABC, abstractmethod
 
+MAX_LBA_LEN = 100
+
 
 class ICommand(ABC):
     @abstractmethod
@@ -14,8 +16,8 @@ class WriteCommand(ICommand):
         self.__val = val
 
     def execute(self) -> int:
-        # system call wrtie
-        ssd_sp = subprocess.run(f"python -m ssd/hil.py w {self.__lba} {self.__val}")
+        # system call write
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py w {self.__lba} {self.__val}")
         return ssd_sp.returncode
 
 
@@ -25,15 +27,42 @@ class ReadCommand(ICommand):
 
     def execute(self) -> int:
         # system call read
-        ssd_sp = subprocess.run(f"python -m ssd/hil.py r {self.__lba}")
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py r {self.__lba}")
+        result_file = open("result.txt", "r")
+        ret = result_file.readline()
+        print(ret)
+        result_file.close()
+
         return ssd_sp.returncode
 
 class FullWriteCommand(ICommand):
-    pass
+    def __init__(self, val):
+        self.__val = val
+
+    def execute(self) -> int:
+        # system call full wrtie
+        for lba in range(MAX_LBA_LEN):
+            ssd_sp = subprocess.run(f"python -m ssd/hill.py w {lba} {self.__val}")
+            if ssd_sp == -1:
+                return -1
+        return 0
 
 
-class FullCommand(ICommand):
-    pass
+class FullReadCommand(ICommand):
+    def __init__(self):
+        super().__init__()
+
+    def execute(self) -> int:
+        # system call full read
+        for lba in range(MAX_LBA_LEN):
+            ssd_sp = subprocess.run(f"python -m ssd/hill.py r {lba}")
+            if ssd_sp == -1:
+                return -1
+            result_file = open("result.txt", "r")
+            ret = result_file.readline()
+            print(ret)
+            result_file.close()
+        return 0
 
 
 class HelpCommand(ICommand):
@@ -48,7 +77,7 @@ def create_shell_command(opcode, *args):
     elif opcode == 'fullwrite':
         return FullWriteCommand(*args)
     elif opcode == 'fullread':
-        return FullCommand(*args)
+        return FullReadCommand()
     elif opcode == 'help':
         return HelpCommand(*args)
     else:
