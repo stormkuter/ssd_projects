@@ -43,3 +43,8 @@ class TestShell(TestCase):
     @patch.object(FullReadCommand, 'execute', return_value=1)
     def test_full_read_failure(self, mock_full_read):
         self.assertEqual(1, self.sut.full_read())
+
+    @patch.object(Shell, 'help', return_value=1)
+    def test_help(self, mock_full_read):
+        self.sut.help()
+        self.sut.help.assert_called_once()
