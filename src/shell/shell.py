@@ -1,15 +1,4 @@
-import subprocess
-
-
-class WriteCommand:
-    def __init__(self, lba, val):
-        self.__lba = lba
-        self.__val = val
-
-    def execute(self) -> int:
-        # system call wrtie
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py w {self.__lba} {self.__val}")
-        return ssd_sp.returncode
+from src.shell.shell_command import create_shell_command
 
 
 class Shell:
@@ -18,7 +7,7 @@ class Shell:
         self.__command = None
 
     def write(self, lba, val) -> int:
-        self.__command = WriteCommand(lba, val)
+        self.__command = create_shell_command('write', lba, val)
         return_code = self.__command.execute()
 
         if not return_code == 0:
@@ -32,10 +21,8 @@ class Shell:
     def help(self, lba, val):
         pass
 
-
     def full_write(self, val):
         pass
-
 
     def full_read(self):
         pass
