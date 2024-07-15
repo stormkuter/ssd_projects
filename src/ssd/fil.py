@@ -1,7 +1,7 @@
 import os
 
 FOLDER_PATH = os.path.join(os.path.dirname(__file__), 'data')
-NAND_FILE_PATH = os.path.join(os.path.dirname(__file__), './nand.txt')
+NAND_FILE_PATH = os.path.join(FOLDER_PATH, './nand.txt')
 INIT_VALUE = 0x00000000
 
 
@@ -14,14 +14,15 @@ class FlashInterfaceLayer:
         if not os.path.exists(FOLDER_PATH):
             os.mkdir(FOLDER_PATH)
 
+
         pass
 
     def write_lba(self, lba, value):
         self.__flash_map[lba] = value
         if not self.__lazy_update:
             # update nand.txt
-            # with open(self.__nand_filename, "w") as f:
-            #     result = f.write(lba, value)
+            # with open(filename, "w") as f:
+            #     result = f.write(value)
             pass
 
         # return result
