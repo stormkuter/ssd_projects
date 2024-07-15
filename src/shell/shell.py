@@ -24,8 +24,13 @@ class Shell:
 
         return return_code
 
-    def help(self, lba, val):
-        pass
+    def help(self):
+        print("write [LBA] [VAL]  : write val on LBA(ex. write 3 0xAAAABBBB)")
+        print("read [LBA]         : read val on LBA(ex. read 3)")
+        print("exit               : exit program")
+        print("help               : manual")
+        print("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
+        print("fullread           : read all val on LBA")
 
     def full_write(self, val):
         self.__command = create_shell_command('fullwrite', val)
