@@ -56,9 +56,19 @@ class Shell:
             user_input = self._get_user_input()
             args = user_input.split()
 
+            if len(args) < 1:
+                print("[Warning] Invalid Command!\nEnter help for details.")
+                continue
+
             if args[0] == 'write':
+                if len(args) != 3:
+                    print("[Warning] Invalid Command!\nEnter help for details.")
+                    continue
                 self.write(args[1], args[2])
             elif args[0] == 'read':
+                if len(args) != 2:
+                    print("[Warning] Invalid Command!\nEnter help for details.")
+                    continue
                 self.read(args[1])
             elif args[0] == 'exit':
                 print('=============== SSD Shell Terminated!  ===============')
@@ -66,11 +76,17 @@ class Shell:
             elif args[0] == 'help':
                 self.help()
             elif args[0] == 'fullwrite':
+                if len(args) != 2:
+                    print("[Warning] Invalid Command!\nEnter help for details.")
+                    continue
                 self.full_write(args[1])
             elif args[0] == 'fullread':
+                if len(args) != 1:
+                    print("[Warning] Invalid Command!\nEnter help for details.")
+                    continue
                 self.full_read()
             else:
-                print("INVALID COMMAND")
+                print("[Warning] Invalid Command!\nEnter help for details.")
 
     def _get_user_input(self):
         return input(">> ").strip()
