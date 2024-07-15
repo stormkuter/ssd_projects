@@ -15,7 +15,7 @@ class WriteCommand(ICommand):
 
     def execute(self) -> int:
         # system call wrtie
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py w {self.__lba} {self.__val}")
+        ssd_sp = subprocess.run(f"python -m ssd/hil.py w {self.__lba} {self.__val}")
         return ssd_sp.returncode
 
 
@@ -25,7 +25,7 @@ class ReadCommand(ICommand):
 
     def execute(self) -> int:
         # system call read
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py r {self.__lba}")
+        ssd_sp = subprocess.run(f"python -m ssd/hil.py r {self.__lba}")
         return ssd_sp.returncode
 
 class FullWriteCommand(ICommand):
