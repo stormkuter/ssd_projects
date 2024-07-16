@@ -6,73 +6,60 @@ MAX_LBA_LEN = 100
 
 class ICommand(ABC):
     @abstractmethod
-    def execute(self) -> int:
+    def execute(self) -> (int, str):
         pass
 
 
 class WriteCommand(ICommand):
-    def __init__(self, lba, val):
-        self.__lba = lba
-        self.__val = val
-
-    def execute(self) -> int:
+    def execute(self, lba, val) -> (int, str):
         # system call write
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py W {self.__lba} {self.__val}")
-        return ssd_sp.returncode
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py W {lba} {val}")
+        return (ssd_sp.returncode, None)
 
 
 class ReadCommand(ICommand):
-    def __init__(self, lba):
-        self.__lba = lba
-
-    def execute(self) -> int:
+    def execute(self, lba) -> (int, str):
         # system call read
-        ssd_sp = subprocess.run(f"python -m ssd/hill.py R {self.__lba}")
+        ssd_sp = subprocess.run(f"python -m ssd/hill.py R {lba}")
         result_file = open("result.txt", "r")
         ret = result_file.readline()
-        print(ret)
+        # print(ret)       외부 출력(임시)
         result_file.close()
 
-        return ssd_sp.returncode
+        return (ssd_sp.returncode, ret)
 
 
 class FullWriteCommand(ICommand):
-    def __init__(self, val):
-        self.__val = val
-
-    def execute(self) -> int:
+    def execute(self, val) -> (int, str):
         # system call full wrtie
         for lba in range(MAX_LBA_LEN):
-            ssd_sp = subprocess.run(f"python -m ssd/hill.py W {lba} {self.__val}")
+            ssd_sp = subprocess.run(f"python -m ssd/hill.py W {lba} {val}")
             if ssd_sp == -1:
-                return -1
-        return 0
+                return (ssd_sp.returncode, None)
+        return (ssd_sp.returncode, None)
 
 
 class FullReadCommand(ICommand):
-    def __init__(self):
-        super().__init__()
-
-    def execute(self) -> int:
+    def execute(self) -> (int, str):
         # system call full read
         for lba in range(MAX_LBA_LEN):
             ssd_sp = subprocess.run(f"python -m ssd/hill.py R {lba}")
             if ssd_sp == -1:
-                return -1
+                (ssd_sp.returncode, None)
             result_file = open("result.txt", "r")
             ret = result_file.readline()
-            print(ret)
+            # print(ret)       외부 출력(임시)
             result_file.close()
-        return 0
+        (ssd_sp.returncode, None)
 
 
 def create_shell_command(opcode, *args):
     if opcode == 'write':
-        return WriteCommand(*args)
+        return WriteCommand()
     elif opcode == 'read':
-        return ReadCommand(*args)
+        return ReadCommand()
     elif opcode == 'fullwrite':
-        return FullWriteCommand(*args)
+        return FullWriteCommand()
     elif opcode == 'fullread':
         return FullReadCommand()
     else:
