@@ -48,6 +48,8 @@ class Shell:
             'read': 2,  # read 3
             'fullwrite': 2,  # fullwrite 0xAAAABBBB
             'fullread': 1,  # fullread
+            'testapp1': 1,  # testapp1
+            'testapp2': 1,  # testapp2
             'exit': 1,  # exit
             'help': 1,  # help
         }
