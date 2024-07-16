@@ -8,7 +8,7 @@ class Shell:
 
     def write(self, lba, val) -> int:
         self.__command = create_shell_command('write')
-        return_code = self.__command.execute()
+        return_code = self.__command.execute(lba, val)
 
         if not return_code == 0:
             pass
@@ -17,7 +17,7 @@ class Shell:
 
     def read(self, lba):
         self.__command = create_shell_command('read')
-        return_code = self.__command.execute()
+        return_code = self.__command.execute(lba)
 
         if not return_code == 0:
             pass
@@ -34,7 +34,7 @@ class Shell:
 
     def full_write(self, val):
         self.__command = create_shell_command('fullwrite')
-        return_code = self.__command.execute()
+        return_code = self.__command.execute(val)
 
         if not return_code == 0:
             pass
