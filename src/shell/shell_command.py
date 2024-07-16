@@ -22,7 +22,7 @@ class ReadCommand(ICommand):
     def execute(self, lba) -> (int, str):
         # system call read
         ssd_sp = subprocess.run(f"python {path.SSD_EXEC} R {lba}")
-        result_file = open("result.txt", "r")
+        result_file = open(path.DATA_FILE_RESULT, "r")
         ret = result_file.readline()
         # print(ret)       외부 출력(임시)
         result_file.close()
