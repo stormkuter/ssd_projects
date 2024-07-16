@@ -36,19 +36,19 @@ class ShellOperation:
         return self.__handle_error(self.__full_read.execute())
 
     def test_app_1(self, expected="0x12345678"):
-        is_mimatched = False
+        is_mismatched = False
         self.full_write(expected)
         for lba in range(NUM_LBAS):
             read_value = self.read(lba).val
             if read_value != expected:
                 print(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
-                is_mimatched = True
+                is_mismatched = True
 
-        if not is_mimatched:
+        if not is_mismatched:
             print("Data is written well")
 
     def test_app_2(self):
-        is_mimatched = False
+        is_mismatched = False
         deprecated = "0xAAAABBBB"
         expected = "0x12345678"
 
@@ -63,9 +63,9 @@ class ShellOperation:
             read_value = self.read(lba).val
             if read_value != expected:
                 print(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
-                is_mimatched = True
+                is_mismatched = True
 
-        if not is_mimatched:
+        if not is_mismatched:
             print("Data is written well")
 
     def help(self):
