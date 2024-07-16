@@ -1,7 +1,9 @@
 import inspect
-from src.shell.shell_command import create_shell_command
+from src.shell.shell_command import WriteCmdFactory, ReadCmdFactory, FullWriteCmdFactory, \
+    FullReadCmdFactory
 
 NUM_LBAS = 100
+
 
 class ReturnObject:
     def __init__(self, err, val):
@@ -11,10 +13,10 @@ class ReturnObject:
 
 class ShellOperation:
     def __init__(self):
-        self.__write = create_shell_command("write")
-        self.__read = create_shell_command("read")
-        self.__full_write = create_shell_command("fullwrite")
-        self.__full_read = create_shell_command("fullread")
+        self.__write = WriteCmdFactory().createCommnad()
+        self.__read = ReadCmdFactory().createCommnad()
+        self.__full_write = FullWriteCmdFactory().createCommnad()
+        self.__full_read = FullReadCmdFactory().createCommnad()
 
     def __handle_error(self, result):
         ret = ReturnObject(result[0], result[1])

@@ -54,14 +54,34 @@ class FullReadCommand(ICommand):
         return ssd_sp.returncode, None
 
 
-def create_shell_command(opcode):
-    if opcode == 'write':
-        return WriteCommand()
-    elif opcode == 'read':
+class CommandFactory(ABC):
+    def newInstance(self) -> ICommand:
+        return self.createCommand()
+
+    @abstractmethod
+    def createCommnad(self) -> ICommand:
+        pass
+
+
+class ReadCmdFactory(CommandFactory):
+
+    def createCommnad(self) -> ICommand:
         return ReadCommand()
-    elif opcode == 'fullwrite':
+
+
+class WriteCmdFactory(CommandFactory):
+
+    def createCommnad(self) -> ICommand:
+        return WriteCommand()
+
+
+class FullWriteCmdFactory(CommandFactory):
+
+    def createCommnad(self) -> ICommand:
         return FullWriteCommand()
-    elif opcode == 'fullread':
+
+
+class FullReadCmdFactory(CommandFactory):
+
+    def createCommnad(self) -> ICommand:
         return FullReadCommand()
-    else:
-        print("INVALID COMMAND")
