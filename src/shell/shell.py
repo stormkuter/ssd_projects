@@ -30,7 +30,7 @@ class Shell:
             elif input_operation == 'help':
                 self.__op.help()
             elif input_operation == 'fullwrite':
-                self.__op..full_write(user_inputs[1])
+                self.__op.full_write(user_inputs[1])
             elif input_operation == 'fullread':
                 self.__op.full_read()
 
