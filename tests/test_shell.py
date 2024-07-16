@@ -62,52 +62,61 @@ class TestShell(TestCase):
         sys.stdout = sys.__stdout__
 
     @patch.object(Shell, '_get_user_input', side_effect=['', 'exit'])
-    def test_run_invalid_command(self, mock_write):
+    def test_run_invalid_operation(self, mock_write):
         output = io.StringIO()
         sys.stdout = output
 
         self.sut.run()
 
-        self.assertTrue('Invalid Command' in output.getvalue())
+        self.assertTrue('No Operation Input' in output.getvalue())
         sys.stdout = sys.__stdout__
 
     @patch.object(Shell, '_get_user_input', side_effect=['write 3', 'exit'])
-    def test_run_invalid_command_write(self, mock_write):
+    def test_run_invalid_operation_write(self, mock_write):
         output = io.StringIO()
         sys.stdout = output
 
         self.sut.run()
 
-        self.assertTrue('Invalid Command' in output.getvalue())
+        self.assertTrue('Invalid Operation Format' in output.getvalue())
         sys.stdout = sys.__stdout__
 
     @patch.object(Shell, '_get_user_input', side_effect=['read', 'exit'])
-    def test_run_invalid_command_read(self, mock_write):
+    def test_run_invalid_operation_read(self, mock_write):
         output = io.StringIO()
         sys.stdout = output
 
         self.sut.run()
 
-        self.assertTrue('Invalid Command' in output.getvalue())
+        self.assertTrue('Invalid Operation Format' in output.getvalue())
         sys.stdout = sys.__stdout__
 
-
     @patch.object(Shell, '_get_user_input', side_effect=['fullwrite', 'exit'])
-    def test_run_invalid_command_fullwrite(self, mock_write):
+    def test_run_invalid_operation_fullwrite(self, mock_write):
         output = io.StringIO()
         sys.stdout = output
 
         self.sut.run()
 
-        self.assertTrue('Invalid Command' in output.getvalue())
+        self.assertTrue('Invalid Operation Format' in output.getvalue())
         sys.stdout = sys.__stdout__
 
     @patch.object(Shell, '_get_user_input', side_effect=['fullread 3', 'exit'])
-    def test_run_invalid_command_fullread(self, mock_write):
+    def test_run_invalid_operation_fullread(self, mock_write):
         output = io.StringIO()
         sys.stdout = output
 
         self.sut.run()
 
-        self.assertTrue('Invalid Command' in output.getvalue())
+        self.assertTrue('Invalid Operation Format' in output.getvalue())
+        sys.stdout = sys.__stdout__
+
+    @patch.object(Shell, '_get_user_input', side_effect=[f'wrote {TEST_LBA} {TEST_VAL}', 'exit'])
+    def test_run_invalid_operation_typo(self, mock_write):
+        output = io.StringIO()
+        sys.stdout = output
+
+        self.sut.run()
+
+        self.assertTrue('Invalid Operation' in output.getvalue())
         sys.stdout = sys.__stdout__
