@@ -1,5 +1,7 @@
 import os
 
+from src.common.path import *
+
 INIT_VALUE = '0x00000000'
 MAX_ADDRESS = 100
 
@@ -10,12 +12,13 @@ class FlashInterfaceLayer:
         self.__lazy_update = False
 
         if is_test:
-            self.folder_path = os.path.join(os.path.dirname(__file__), '../../tests/data')
+            self.folder_path = TEST_BASE_DIR
+            self.nand_file_path = TEST_DATA_FILE_NAND
+            self.result_file_path = TEST_DATA_FILE_RESULT
         else:
-            self.folder_path = os.path.join(os.path.dirname(__file__), 'data')
-
-        self.nand_file_path = os.path.join(self.folder_path, './nand.txt')
-        self.result_file_path = os.path.join(self.folder_path, './result.txt')
+            self.folder_path = SOURCE_BASE_DIR
+            self.nand_file_path = DATA_FILE_NAND
+            self.result_file_path = DATA_FILE_RESULT
 
         self.create_output_files()
 
