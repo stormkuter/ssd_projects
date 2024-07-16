@@ -59,29 +59,29 @@ class CommandFactory(ABC):
         return self.createCommand()
 
     @abstractmethod
-    def createCommnad(self) -> ICommand:
+    def createCommand(self) -> ICommand:
         pass
 
 
 class ReadCmdFactory(CommandFactory):
 
-    def createCommnad(self) -> ICommand:
+    def createCommand(self) -> ICommand:
         return ReadCommand()
 
 
 class WriteCmdFactory(CommandFactory):
 
-    def createCommnad(self) -> ICommand:
+    def createCommand(self) -> ICommand:
         return WriteCommand()
 
 
 class FullWriteCmdFactory(CommandFactory):
 
-    def createCommnad(self) -> ICommand:
+    def createCommand(self) -> ICommand:
         return FullWriteCommand()
 
 
 class FullReadCmdFactory(CommandFactory):
 
-    def createCommnad(self) -> ICommand:
+    def createCommand(self) -> ICommand:
         return FullReadCommand()

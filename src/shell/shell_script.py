@@ -13,10 +13,10 @@ class ReturnObject:
 
 class ShellOperation:
     def __init__(self):
-        self.__write = WriteCmdFactory().createCommnad()
-        self.__read = ReadCmdFactory().createCommnad()
-        self.__full_write = FullWriteCmdFactory().createCommnad()
-        self.__full_read = FullReadCmdFactory().createCommnad()
+        self.__write = WriteCmdFactory().createCommand()
+        self.__read = ReadCmdFactory().createCommand()
+        self.__full_write = FullWriteCmdFactory().createCommand()
+        self.__full_read = FullReadCmdFactory().createCommand()
 
     def __handle_error(self, result):
         ret = ReturnObject(result[0], result[1])
