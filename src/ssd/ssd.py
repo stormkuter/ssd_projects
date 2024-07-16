@@ -2,6 +2,8 @@
 import os
 import sys
 
+from src.ssd.fil import FlashInterfaceLayer
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
@@ -14,11 +16,11 @@ from src.ssd.hil import HostInterfaceLayer, OpCode
 # DTO 랑 느낌이 비슷한데 그냥 Ssd를 HIL에 넘기는 방식으로 처리해도 될 듯...
 class Ssd:
     def __init__(self):
-        self.hil = HostInterfaceLayer()
-        self.__op_code: OpCode
-        self.__address: int
-        self.__value: str
-        self.__extra_commands: list
+        self.hil = None
+        self.__op_code = None
+        self.__address = None
+        self.__value = None
+        self.__extra_commands = []
         self.args = []
 
     def set_hil(self, hil: HostInterfaceLayer):
@@ -30,7 +32,6 @@ class Ssd:
         self.args.append(self.__address)
         if len(command) > 3:
             self.__value = command[3]
-            self.__extra_commands = command[4:]
 
     def get_op_code(self):
         return self.__op_code
@@ -47,15 +48,17 @@ class Ssd:
     # extra command는 무시한다.
     # ssd.py w 1 2 3 4 이렇게 넣어도 뒤에는 무시하고 ssd.py w 1 2로 해석하고 실행.
     def run(self):
-        try:
+        if self.__value is not None:
             self.hil.get_command(self.__op_code, self.__address, self.__value)
-        except:
+        else:
             self.hil.get_command(self.__op_code, self.__address)
 
 
 if __name__ == "__main__":
     commands = sys.argv
     ssd = Ssd()
+    hil = HostInterfaceLayer()
+    hil.set_fil(FlashInterfaceLayer())
 
     # 필요하다면 ssd에서 올라오는 exception을 다 잡아서 종류 별로 exit code 지정 가능
     # try:
