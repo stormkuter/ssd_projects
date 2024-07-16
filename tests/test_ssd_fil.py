@@ -8,6 +8,8 @@ os.environ['ENV'] = 'test'
 from src.ssd.fil import FlashInterfaceLayer, FilePath
 
 INIT_VALUE = '0x00000000'
+TEST_VALUE = '0x12345678'
+TEST_ADDRESS = '1'
 MAX_ADDRESS = 100
 
 
@@ -26,11 +28,8 @@ class MyTestCase(unittest.TestCase):
         self.check_folder_exist(self.folder_path)
 
     def test_nand_file_create_init(self):
-        path = pl.Path(self.nand_file_path)
-
         self.check_file_exist(self.nand_file_path)
-
-        read_data = pl.Path(path).read_text().split('\n')
+        read_data = self.get_file_data(self.nand_file_path)
         self.assertEqual(len(read_data), MAX_ADDRESS)
 
         for i in range(MAX_ADDRESS):
@@ -41,23 +40,20 @@ class MyTestCase(unittest.TestCase):
         read_data = self.get_file_data(self.result_file_path)
 
         self.check_file_exist(self.result_file_path)
-        self.assertEqual(read_data, INIT_VALUE)
+        self.assertEqual(read_data[0], INIT_VALUE)
 
     def test_write_lba_success(self):
         self.sut.enable_lasy_update()
-        lba = '0'
-        value = '0x10000000'
-        self.sut.write_lba(lba, value)
+        self.sut.write_lba(TEST_ADDRESS, TEST_VALUE)
 
-        self.assertEqual(self.sut.read_lba(lba), value)
+        self.assertEqual(self.sut.read_lba(TEST_ADDRESS), TEST_VALUE)
 
     def test_read_lba_success(self):
         read_data = self.get_file_data(self.result_file_path)
-        lba = 0
-        self.assertEqual(self.sut.read_lba(str(lba)), read_data)
+        self.assertEqual(self.sut.read_lba(TEST_ADDRESS), read_data[0])
 
     def get_file_data(self, path):
-        return pl.Path(path).read_text().split('\n')[0]
+        return pl.Path(path).read_text().split('\n')
 
     def check_file_exist(self, path):
         if not pl.Path(path).resolve().is_file():
