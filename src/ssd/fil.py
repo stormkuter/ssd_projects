@@ -6,7 +6,7 @@ MAX_ADDRESS = 100
 
 
 class FilePath(enum.Enum):
-    if os.environ['ENV'] == 'test':
+    if os.environ.get('ENV', 'prod') == 'test':
         folder_path = os.path.join(os.path.dirname(__file__), '../../tests/data')
     else:
         folder_path = os.path.join(os.path.dirname(__file__), 'data')
@@ -42,14 +42,18 @@ class FlashInterfaceLayer:
         if not os.path.exists(self.nand_file_path):
             with open(self.nand_file_path, "w") as f:
                 for i in range(MAX_ADDRESS - 1):
-                    self.__flash_map[i] = INIT_VALUE[2:]
-                    f.write(f'{self.__flash_map[i]}\n')
-                self.__flash_map[MAX_ADDRESS] = INIT_VALUE[2:]
-                f.write(f'{INIT_VALUE[2:]}')
+                    f.write(f'{INIT_VALUE}\n')
+                f.write(f'{INIT_VALUE}')
 
         if not os.path.exists(self.result_file_path):
             with open(self.result_file_path, "w") as f:
-                f.write(f'{INIT_VALUE[2:]}')
+                f.write(f'{INIT_VALUE}')
+
+        with open(self.nand_file_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            self.__flash_map[str(i)] = line.strip()
 
     def write_lba(self, lba, value):
         self.__flash_map[lba] = value
@@ -59,9 +63,17 @@ class FlashInterfaceLayer:
     def read_lba(self, lba):
         if not self.__lazy_update:
             # update result.txt
+            with open(self.result_file_path, "w") as f:
+                f.write(self.__flash_map[lba])
             pass
         return self.__flash_map[lba]
 
     def flush(self):
         # update nand.txt, result.txt
         pass
+
+    def enable_lasy_update(self):
+        self.__lazy_update = False
+
+    def disable_lasy_update(self):
+        self.__lazy_update = True
