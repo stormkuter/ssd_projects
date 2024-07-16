@@ -45,12 +45,12 @@ class FullReadCommand(ICommand):
         for lba in range(MAX_LBA_LEN):
             ssd_sp = subprocess.run(f"python -m ssd/hill.py r {lba}")
             if ssd_sp == -1:
-                (ssd_sp.returncode, None)
+                return (ssd_sp.returncode, None)
             result_file = open("result.txt", "r")
             ret = result_file.readline()
             # print(ret)       외부 출력(임시)
             result_file.close()
-        (ssd_sp.returncode, None)
+        return (ssd_sp.returncode, None)
 
 
 def create_shell_command(opcode):
