@@ -62,7 +62,7 @@ class HostInterfaceLayer:
         spell_dict = {"A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15}
         if spell.isdigit():
             return int(spell)
-        elif spell in spell_dict:
-            return spell_dict[spell]
+        elif spell.upper() in spell_dict:
+            return spell_dict[spell.upper()]
         else:
             raise ValueError(f"입력된 값의 형식이 잘못 되었습니다.")
