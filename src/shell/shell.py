@@ -72,8 +72,16 @@ class Shell:
                 print("[Warning] Invalid LBA!\nEnter 'help' for details.")
                 return False
 
-        if input_operation == 'write' or input_operation == 'fullwrite':
+        if input_operation == 'write':
             val = user_inputs[2]
+            valid_val = re.match('^0x[0-9A-F]{8}$', val)
+
+            if valid_val is None:
+                print("[Warning] Invalid Value!\nEnter 'help' for details.")
+                return False
+
+        if input_operation == 'fullwrite':
+            val = user_inputs[1]
             valid_val = re.match('^0x[0-9A-F]{8}$', val)
 
             if valid_val is None:
