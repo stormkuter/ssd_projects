@@ -1,5 +1,6 @@
 import unittest
 import pathlib as pl
+import shutil
 import os
 from unittest import skip
 
@@ -13,6 +14,8 @@ MAX_ADDRESS = 100
 class MyTestCase(unittest.TestCase):
     def setUp(self):
         super().setUp()
+
+        shutil.rmtree(os.path.join(os.path.dirname(__file__), 'data'), ignore_errors=True)
 
         self.sut = FlashInterfaceLayer()
         self.folder_path = FilePath.get_folder_path().value
@@ -38,23 +41,27 @@ class MyTestCase(unittest.TestCase):
         read_data = self.get_file_data(self.result_file_path)
 
         self.check_file_exist(self.result_file_path)
-        self.assertEqual(len(read_data), 1)
+        self.assertEqual(read_data, INIT_VALUE)
 
-    @skip
     def test_write_lba_success(self):
-        pass
+        self.sut.enable_lasy_update()
+        lba = '0'
+        value = '0x10000000'
+        self.sut.write_lba(lba, value)
+
+        self.assertEqual(self.sut.read_lba(lba), value)
 
     def test_read_lba_success(self):
         read_data = self.get_file_data(self.result_file_path)
         lba = 0
-        self.assertEqual(self.sut.read_lba(str(lba)), read_data[lba])
+        self.assertEqual(self.sut.read_lba(str(lba)), read_data)
 
     def get_file_data(self, path):
-        return pl.Path(path).read_text().split('\n')
+        return pl.Path(path).read_text().split('\n')[0]
 
     def check_file_exist(self, path):
         if not pl.Path(path).resolve().is_file():
-            raise AssertionError(f"File does not exist: %s" % str(path))
+            raise AssertionError("File does not exist: %s" % str(path))
 
     def check_folder_exist(self, path):
         if not pl.Path(path).resolve().is_dir():

@@ -58,7 +58,10 @@ class FlashInterfaceLayer:
     def write_lba(self, lba, value):
         self.__flash_map[lba] = value
         if not self.__lazy_update:
-            pass
+            with open(self.nand_file_path, "w") as f:
+                for i in range(MAX_ADDRESS - 1):
+                    f.write(f'{self.__flash_map[str(i)]}\n')
+                f.write(f'{self.__flash_map[str(MAX_ADDRESS - 1)]}')
 
     def read_lba(self, lba):
         if not self.__lazy_update:
