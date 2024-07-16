@@ -1,7 +1,7 @@
 import unittest
 import pathlib as pl
-import shutil
 import os
+import shutil
 from unittest import skip
 
 os.environ['ENV'] = 'test'
@@ -20,9 +20,9 @@ class MyTestCase(unittest.TestCase):
         shutil.rmtree(os.path.join(os.path.dirname(__file__), 'data'), ignore_errors=True)
 
         self.sut = FlashInterfaceLayer()
-        self.folder_path = FilePath.get_folder_path().value
-        self.nand_file_path = FilePath.get_nand_file_path().value
-        self.result_file_path = FilePath.get_result_file_path().value
+        self.folder_path = FilePath.get_folder_path()
+        self.nand_file_path = FilePath.get_nand_file_path()
+        self.result_file_path = FilePath.get_result_file_path()
 
     def test_folder_create(self):
         self.check_folder_exist(self.folder_path)

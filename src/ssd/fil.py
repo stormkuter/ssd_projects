@@ -1,11 +1,10 @@
 import os
-import enum
 
 INIT_VALUE = '0x00000000'
 MAX_ADDRESS = 100
 
 
-class FilePath(enum.Enum):
+class FilePath:
     if os.environ.get('ENV', 'prod') == 'test':
         folder_path = os.path.join(os.path.dirname(__file__), '../../tests/data')
     else:
@@ -31,9 +30,9 @@ class FlashInterfaceLayer:
         self.__flash_map = {}
         self.__lazy_update = False
 
-        self.folder_path = FilePath.get_folder_path().value
-        self.nand_file_path = FilePath.get_nand_file_path().value
-        self.result_file_path = FilePath.get_result_file_path().value
+        self.folder_path = FilePath.get_folder_path()
+        self.nand_file_path = FilePath.get_nand_file_path()
+        self.result_file_path = FilePath.get_result_file_path()
 
         # .data/nand.txt, result.txt 에 유효한 정보가 있다면 읽어서 가져옴
         if not os.path.exists(self.folder_path):
