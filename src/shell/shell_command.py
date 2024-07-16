@@ -35,6 +35,7 @@ class ReadCommand(ICommand):
 
         return ssd_sp.returncode
 
+
 class FullWriteCommand(ICommand):
     def __init__(self, val):
         self.__val = val
@@ -65,10 +66,6 @@ class FullReadCommand(ICommand):
         return 0
 
 
-class HelpCommand(ICommand):
-    pass
-
-
 def create_shell_command(opcode, *args):
     if opcode == 'write':
         return WriteCommand(*args)
@@ -78,7 +75,5 @@ def create_shell_command(opcode, *args):
         return FullWriteCommand(*args)
     elif opcode == 'fullread':
         return FullReadCommand()
-    elif opcode == 'help':
-        return HelpCommand(*args)
     else:
         print("INVALID COMMAND")
