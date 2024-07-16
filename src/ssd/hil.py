@@ -25,7 +25,7 @@ class OpCode(enum.Enum):
 class HostInterfaceLayer:
 
     def __init__(self):
-        self.__fil:FlashInterfaceLayer = None
+        self.__fil = FlashInterfaceLayer()
 
     def set_fil(self, fil: FlashInterfaceLayer):
         self.__fil = fil
@@ -46,7 +46,7 @@ class HostInterfaceLayer:
             self.__validation_of_value(args[1])
 
     def __validation_of_address(self, address):
-        if not isinstance(address, int) or (MIN_ADDRESS > address) or (address > MAX_ADDRESS):
+        if not isinstance(address, str) or (MIN_ADDRESS > int(address)) or (int(address) > MAX_ADDRESS):
             raise ValueError(f"입력된 주소값이 잘못 되었습니다.: {address}")
 
     def __validation_of_value(self, value: str):

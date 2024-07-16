@@ -19,15 +19,18 @@ class Ssd:
         self.__address: int
         self.__value: str
         self.__extra_commands: list
+        self.args = []
 
     def set_hil(self, hil: HostInterfaceLayer):
         self.hil = hil
 
     def set_commands(self, command):
         self.__op_code = OpCode.get_op_code_by(command[1])
-        self.__address = int(command[2])
-        self.__value = command[3]
-        self.__extra_commands = command[4:]
+        self.__address = command[2]
+        self.args.append(self.__address)
+        if len(command) > 3:
+            self.__value = command[3]
+            self.__extra_commands = command[4:]
 
     def get_op_code(self):
         return self.__op_code
@@ -44,7 +47,10 @@ class Ssd:
     # extra command는 무시한다.
     # ssd.py w 1 2 3 4 이렇게 넣어도 뒤에는 무시하고 ssd.py w 1 2로 해석하고 실행.
     def run(self):
-        self.hil.get_command(self.__op_code, self.__address, self.__value)
+        try:
+            self.hil.get_command(self.__op_code, self.__address, self.__value)
+        except:
+            self.hil.get_command(self.__op_code, self.__address)
 
 
 if __name__ == "__main__":
@@ -52,9 +58,9 @@ if __name__ == "__main__":
     ssd = Ssd()
 
     # 필요하다면 ssd에서 올라오는 exception을 다 잡아서 종류 별로 exit code 지정 가능
-    try:
-        ssd.set_commands(commands)
-        ssd.run()
-    except Exception as e:
-        print(ExceptionLog.get_log_msg(e, "SSD Fail"))
-        sys.exit(99)
+    # try:
+    ssd.set_commands(commands)
+    ssd.run()
+    # except Exception as e:
+    #     print(ExceptionLog.get_log_msg(e, "SSD Fail"))
+    #     sys.exit(99)
