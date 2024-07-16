@@ -13,10 +13,10 @@ class OpCode(enum.Enum):
 
     @classmethod
     def get_op_code_by(cls, command: str):
-        command = command.lower()
-        if command == "r":
+        command = command.upper()
+        if command == "R":
             return OpCode.READ
-        if command == "w":
+        if command == "W":
             return OpCode.WRITE
         else:
             raise ValueError(f"잘못된 명령어가 입력되었습니다.: {command}")
@@ -25,7 +25,7 @@ class OpCode(enum.Enum):
 class HostInterfaceLayer:
 
     def __init__(self):
-        self.__fil = FlashInterfaceLayer()
+        self.__fil = None
 
     def set_fil(self, fil: FlashInterfaceLayer):
         self.__fil = fil
@@ -35,7 +35,11 @@ class HostInterfaceLayer:
         if op_code == OpCode.READ:
             self.__fil.read_lba(args[0])
         elif op_code == OpCode.WRITE:
-            self.__fil.write_lba(args[0], args[1])
+            value = self.to_upper(args[1])
+            self.__fil.write_lba(args[0], value)
+
+    def to_upper(self, value: str):
+        return value[:2] + value[2:].upper()
 
     def __validation_args(self, args):
         if len(args) == 0:
