@@ -43,7 +43,7 @@ class FullReadCommand(ICommand):
     def execute(self) -> (int, str):
         # system call full read
         for lba in range(MAX_LBA_LEN):
-            ssd_sp = subprocess.run(f"python -m ssd/hill.py r {lba}")
+            ssd_sp = subprocess.run(f"python -m ssd/hill.py R {lba}")
             if ssd_sp == -1:
                 return (ssd_sp.returncode, None)
             result_file = open("result.txt", "r")
