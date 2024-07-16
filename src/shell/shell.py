@@ -1,3 +1,5 @@
+import re
+
 from src.shell.shell_command import create_shell_command
 
 
@@ -101,6 +103,20 @@ class Shell:
         if args_num != args_num_dict[input_operation]:
             print("[Warning] Invalid Operation Format!\nEnter 'help' for details.")
             return False
+
+        if input_operation == 'write' or input_operation == 'read':
+            lba = int(user_inputs[1])
+            if lba < 0 or lba > 99:
+                print("[Warning] Invalid LBA!\nEnter 'help' for details.")
+                return False
+
+        if input_operation == 'write' or input_operation == 'fullwrite':
+            val = user_inputs[2]
+            valid_val = re.match('^0x[0-9A-F]{8}$', val)
+
+            if valid_val is None:
+                print("[Warning] Invalid Value!\nEnter 'help' for details.")
+                return False
 
         return True
 
