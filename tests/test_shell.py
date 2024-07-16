@@ -27,7 +27,6 @@ class TestShell(TestCase):
     def tearDown(self):
         sys.stdout = sys.__stdout__
 
-    @patch.object(WriteCommand, 'execute', return_value=0)
     @patch.object(WriteCommand, 'execute', return_value=(0, None))
     def test_write_success(self, mock_write):
         self.assertEqual(0, self.__op.write(TEST_LBA, TEST_VAL).err)
