@@ -19,6 +19,12 @@ class TestShell(TestCase):
     def setUp(self):
         self.sut = Shell()
 
+        self.output = io.StringIO()
+        sys.stdout = self.output
+
+    def tearDown(self):
+        sys.stdout = sys.__stdout__
+
     @patch.object(WriteCommand, 'execute', return_value=0)
     def test_write_success(self, mock_write):
         self.assertEqual(0, self.sut.write(TEST_LBA, TEST_VAL))
@@ -58,110 +64,66 @@ class TestShell(TestCase):
 
     @patch.object(Shell, '_get_user_input', return_value='exit')
     def test_run_exit_success(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Terminated' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Terminated' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=['', 'exit'])
     def test_run_invalid_operation(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('No Operation Input' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('No Operation Input' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=['write 3', 'exit'])
     def test_run_invalid_operation_write(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Operation Format' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Operation Format' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=['read', 'exit'])
     def test_run_invalid_operation_read(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Operation Format' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Operation Format' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=['fullwrite', 'exit'])
     def test_run_invalid_operation_fullwrite(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Operation Format' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Operation Format' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=['fullread 3', 'exit'])
     def test_run_invalid_operation_fullread(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Operation Format' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Operation Format' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=[f'wrote {TEST_LBA} {TEST_VAL}', 'exit'])
     def test_run_invalid_operation_typo(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Operation' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Operation' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=[f'write {INVALID_LBA_MINUS} {TEST_VAL}', 'exit'])
     def test_run_invalid_lba_minus(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid LBA' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid LBA' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=[f'write {INVALID_LBA_PLUS} {TEST_VAL}', 'exit'])
     def test_run_invalid_lba_plus(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid LBA' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid LBA' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=[f'write {TEST_LBA} {INVALID_VAL_WITHOUT_0x}', 'exit'])
     def test_run_invalid_value_without_0x(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Value' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Value' in self.output.getvalue())
 
     @patch.object(Shell, '_get_user_input', side_effect=[f'write {TEST_LBA} {INVALID_VAL_NOT_TEN_CHAR}', 'exit'])
     def test_run_invalid_value_not_ten_char(self, mock_write):
-        output = io.StringIO()
-        sys.stdout = output
-
         self.sut.run()
 
-        self.assertTrue('Invalid Value' in output.getvalue())
-        sys.stdout = sys.__stdout__
+        self.assertTrue('Invalid Value' in self.output.getvalue())
