@@ -53,7 +53,7 @@ class FullReadCommand(ICommand):
         (ssd_sp.returncode, None)
 
 
-def create_shell_command(opcode, *args):
+def create_shell_command(opcode):
     if opcode == 'write':
         return WriteCommand()
     elif opcode == 'read':

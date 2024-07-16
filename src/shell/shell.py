@@ -7,7 +7,7 @@ class Shell:
         self.__command = None
 
     def write(self, lba, val) -> int:
-        self.__command = create_shell_command('write', lba, val)
+        self.__command = create_shell_command('write')
         return_code = self.__command.execute()
 
         if not return_code == 0:
@@ -16,7 +16,7 @@ class Shell:
         return return_code
 
     def read(self, lba):
-        self.__command = create_shell_command('read', lba)
+        self.__command = create_shell_command('read')
         return_code = self.__command.execute()
 
         if not return_code == 0:
@@ -33,7 +33,7 @@ class Shell:
         print("fullread           : read all val on LBA")
 
     def full_write(self, val):
-        self.__command = create_shell_command('fullwrite', val)
+        self.__command = create_shell_command('fullwrite')
         return_code = self.__command.execute()
 
         if not return_code == 0:
