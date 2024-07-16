@@ -24,7 +24,7 @@ class ReadCommand(ICommand):
         ssd_sp = subprocess.run(f"python {path.SSD_EXEC} R {lba}")
         result_file = open(path.DATA_FILE_RESULT, "r")
         ret = result_file.readline()
-        # print(ret)       외부 출력(임시)
+        print(ret)
         result_file.close()
 
         return (ssd_sp.returncode, ret)
@@ -49,7 +49,7 @@ class FullReadCommand(ICommand):
                 return ssd_sp.returncode, None
             result_file = open(path.DATA_FILE_RESULT, "r")
             ret = result_file.readline()
-            # print(ret)       외부 출력(임시)
+            print(ret)
             result_file.close()
         return ssd_sp.returncode, None
 
