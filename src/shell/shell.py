@@ -78,7 +78,7 @@ class Shell:
 
         if input_operation == 'write':
             val = user_inputs[2]
-            valid_val = re.match('^0x[0-9A-F]{8}$', val)
+            valid_val = re.match('^0x[0-9A-Fa-f]{8}$', val)
 
             if valid_val is None:
                 print("[Warning] Invalid Value!\nEnter 'help' for details.")
