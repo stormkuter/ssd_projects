@@ -52,53 +52,53 @@ class Shell:
 
     def run(self):
         print('================= SSD Shell Started! =================')
-        while True:
-            user_input = self._get_user_input()
-            args = user_input.split()
 
-            if not self.is_valid_user_input(args):
+        while True:
+            user_inputs = self._get_user_input().split()
+
+            if not self._is_valid_user_input(user_inputs):
                 continue
 
-            if args[0] == 'write':
-                self.write(args[1], args[2])
-            elif args[0] == 'read':
-                self.read(args[1])
-            elif args[0] == 'exit':
+            input_operation = user_inputs[0]
+
+            if input_operation == 'write':
+                self.write(user_inputs[1], user_inputs[2])
+            elif input_operation == 'read':
+                self.read(user_inputs[1])
+            elif input_operation == 'exit':
                 print('=============== SSD Shell Terminated!  ===============')
                 break
-            elif args[0] == 'help':
+            elif input_operation == 'help':
                 self.help()
-            elif args[0] == 'fullwrite':
-                self.full_write(args[1])
-            elif args[0] == 'fullread':
+            elif input_operation == 'fullwrite':
+                self.full_write(user_inputs[1])
+            elif input_operation == 'fullread':
                 self.full_read()
 
     def _get_user_input(self):
         return input(">> ").strip()
 
-    def is_valid_user_input(self, args) -> bool:
+    def _is_valid_user_input(self, user_inputs) -> bool:
         args_num_dict = {
-            'write': 3,
-            'read': 2,
-            'exit': 1,
-            'help': 1,
-            'fullwrite': 2,
-            'fullread': 1,
+            'write': 3,  # write 3 0xAAAABBBB
+            'read': 2,  # read 3
+            'fullwrite': 2,  # fullwrite 0xAAAABBBB
+            'fullread': 1,  # fullread
+            'exit': 1,  # exit
+            'help': 1,  # help
         }
 
-        args_num = len(args)
-
-        if args_num < 1:
+        if not user_inputs:
             print("[Warning] No Operation Input!\nEnter 'help' for details.")
             return False
 
-        input_command = args[0]
-
-        if input_command not in args_num_dict.keys():
+        input_operation = user_inputs[0]
+        if input_operation not in args_num_dict.keys():
             print("[Warning] Invalid Operation!\nEnter 'help' for details.")
             return False
 
-        if args_num != args_num_dict[input_command]:
+        args_num = len(user_inputs)
+        if args_num != args_num_dict[input_operation]:
             print("[Warning] Invalid Operation Format!\nEnter 'help' for details.")
             return False
 
