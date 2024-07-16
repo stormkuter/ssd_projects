@@ -35,10 +35,9 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(read_data), MAX_ADDRESS)
 
         for i in range(MAX_ADDRESS):
-            if read_data[i] != INIT_VALUE[2:]:
+            if read_data[i] != INIT_VALUE:
                 raise AssertionError("initial value is not matched")
 
-    @skip
     def test_result_file_create_init(self):
         path = pl.Path(self.result_file_path)
 
@@ -49,24 +48,14 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(read_data), 1)
 
     @skip
-    def test_prev_nand_file_load(self):
-        pass
-
-    @skip
     def test_write_lba_success(self):
         pass
 
-    @skip
-    def test_write_lba_fail(self):
-        pass
-
-    @skip
     def test_read_lba_success(self):
-        pass
-
-    @skip
-    def test_read_lba_fail(self):
-        pass
+        path = pl.Path(self.result_file_path)
+        read_data = pl.Path(path).read_text().split('\n')
+        lba = 0
+        self.assertEqual(self.sut.read_lba(str(lba)), read_data[lba])
 
 
 if __name__ == '__main__':
