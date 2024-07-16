@@ -2,13 +2,12 @@
 import os
 import sys
 
-from src.ssd.fil import FlashInterfaceLayer
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
 
 # local
+from src.ssd.fil import FlashInterfaceLayer
 from src.exception.exception_log import ExceptionLog
 from src.ssd.hil import HostInterfaceLayer, OpCode
 
@@ -59,6 +58,7 @@ if __name__ == "__main__":
     ssd = Ssd()
     hil = HostInterfaceLayer()
     hil.set_fil(FlashInterfaceLayer())
+    ssd.set_hil(hil)
 
     # 필요하다면 ssd에서 올라오는 exception을 다 잡아서 종류 별로 exit code 지정 가능
     # try:
