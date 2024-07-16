@@ -16,8 +16,6 @@ class ShellOperation:
         self.__full_read = create_shell_command("fullread")
 
     def __handle_error(self, result):
-        print(type(self.__write.execute))
-        print(type(result), result)
         ret = ReturnObject(result[0], result[1])
         if ret.err:
             func = inspect.currentframe().f_back.f_back.f_code.co_name
