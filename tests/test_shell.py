@@ -6,8 +6,8 @@ from unittest.mock import patch
 from src.shell.shell import Shell
 from src.shell.shell_command import WriteCommand, ReadCommand, FullReadCommand, FullWriteCommand
 
-TEST_LBA = 3
-TEST_VAL = 0xAAAABBBB
+TEST_LBA = '3'
+TEST_VAL = '0xAAAABBBB'
 
 
 class TestShell(TestCase):
