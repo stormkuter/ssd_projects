@@ -20,16 +20,12 @@ class MyTestCase(unittest.TestCase):
         self.result_file_path = FilePath.get_result_file_path().value
 
     def test_folder_create(self):
-        path = pl.Path(self.folder_path)
-
-        if not pl.Path(path).resolve().is_dir():
-            raise AssertionError("Folder does not exist: %s" % str(path))
+        self.check_folder_exist(self.folder_path)
 
     def test_nand_file_create_init(self):
         path = pl.Path(self.nand_file_path)
 
-        if not pl.Path(path).resolve().is_file():
-            raise AssertionError("nand.txt File does not exist: %s" % str(path))
+        self.check_file_exist(self.nand_file_path)
 
         read_data = pl.Path(path).read_text().split('\n')
         self.assertEqual(len(read_data), MAX_ADDRESS)
@@ -39,12 +35,9 @@ class MyTestCase(unittest.TestCase):
                 raise AssertionError("initial value is not matched")
 
     def test_result_file_create_init(self):
-        path = pl.Path(self.result_file_path)
+        read_data = self.get_file_data(self.result_file_path)
 
-        if not pl.Path(path).resolve().is_file():
-            raise AssertionError("result.txt File does not exist: %s" % str(path))
-
-        read_data = pl.Path(path).read_text().split('\n')
+        self.check_file_exist(self.result_file_path)
         self.assertEqual(len(read_data), 1)
 
     @skip
@@ -52,10 +45,20 @@ class MyTestCase(unittest.TestCase):
         pass
 
     def test_read_lba_success(self):
-        path = pl.Path(self.result_file_path)
-        read_data = pl.Path(path).read_text().split('\n')
+        read_data = self.get_file_data(self.result_file_path)
         lba = 0
         self.assertEqual(self.sut.read_lba(str(lba)), read_data[lba])
+
+    def get_file_data(self, path):
+        return pl.Path(path).read_text().split('\n')
+
+    def check_file_exist(self, path):
+        if not pl.Path(path).resolve().is_file():
+            raise AssertionError(f"File does not exist: %s" % str(path))
+
+    def check_folder_exist(self, path):
+        if not pl.Path(path).resolve().is_dir():
+            raise AssertionError("Folder does not exist: %s" % str(path))
 
 
 if __name__ == '__main__':
