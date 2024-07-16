@@ -89,17 +89,17 @@ class Shell:
         args_num = len(args)
 
         if args_num < 1:
-            print("[Warning] Invalid Command!\nEnter help for details.")
+            print("[Warning] No Operation Input!\nEnter 'help' for details.")
             return False
 
         input_command = args[0]
 
         if input_command not in args_num_dict.keys():
-            print("[Warning] Invalid Command!\nEnter help for details.")
+            print("[Warning] Invalid Operation!\nEnter 'help' for details.")
             return False
 
         if args_num != args_num_dict[input_command]:
-            print("[Warning] Invalid Command!\nEnter help for details.")
+            print("[Warning] Invalid Operation Format!\nEnter 'help' for details.")
             return False
 
         return True
