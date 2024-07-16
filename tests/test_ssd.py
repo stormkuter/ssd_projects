@@ -30,7 +30,8 @@ class TestSSD(TestCase):
 
         # assert
         self.assertEqual(expected_result, self.sut_ssd.get_op_code())
-        self.assertEqual(TEST_COMMANDS[2:], self.sut_ssd.get_extra_commands())
+        self.assertEqual(int(TEST_COMMANDS[2]), self.sut_ssd.get_address())
+        self.assertEqual(TEST_COMMANDS[3], self.sut_ssd.get_value())
 
     def test_run_should_raise_exception_without_set_commands(self):
         # act & assert
