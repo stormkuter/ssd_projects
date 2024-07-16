@@ -5,7 +5,7 @@ import shutil
 from unittest import skip
 
 os.environ['ENV'] = 'test'
-from src.ssd.fil import FlashInterfaceLayer, FilePath
+from src.ssd.fil import FlashInterfaceLayer
 
 INIT_VALUE = '0x00000000'
 TEST_VALUE = '0x12345678'
@@ -19,10 +19,10 @@ class MyTestCase(unittest.TestCase):
 
         shutil.rmtree(os.path.join(os.path.dirname(__file__), 'data'), ignore_errors=True)
 
-        self.sut = FlashInterfaceLayer()
-        self.folder_path = FilePath.get_folder_path()
-        self.nand_file_path = FilePath.get_nand_file_path()
-        self.result_file_path = FilePath.get_result_file_path()
+        self.sut = FlashInterfaceLayer(True)
+        self.folder_path = self.sut.get_folder_path()
+        self.nand_file_path = self.sut.get_nand_file_path()
+        self.result_file_path = self.sut.get_result_file_path()
 
     def test_folder_create(self):
         self.check_folder_exist(self.folder_path)

@@ -24,7 +24,7 @@ class OpCode(enum.Enum):
 class HostInterfaceLayer:
 
     def __init__(self):
-        self.__fil = FlashInterfaceLayer()
+        self.__fil:FlashInterfaceLayer = None
 
     def set_fil(self, fil: FlashInterfaceLayer):
         self.__fil = fil
