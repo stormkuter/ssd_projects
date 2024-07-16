@@ -13,6 +13,7 @@ class OpCode(enum.Enum):
 
     @classmethod
     def get_op_code_by(cls, command: str):
+        command = command.lower()
         if command == "r":
             return OpCode.READ
         if command == "w":
