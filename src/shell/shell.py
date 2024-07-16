@@ -38,6 +38,10 @@ class Shell:
                 self.__op.full_write(user_inputs[1])
             elif input_operation == 'fullread':
                 self.__op.full_read()
+            elif input_operation == 'testapp1':
+                self.__op.test_app_1()
+            elif input_operation == 'testapp2':
+                self.__op.test_app_2()
 
     def _get_user_input(self):
         return input(">> ").strip()

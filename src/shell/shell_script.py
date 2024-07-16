@@ -1,6 +1,7 @@
 import inspect
 from src.shell.shell_command import create_shell_command
 
+NUM_LBAS = 100
 
 class ReturnObject:
     def __init__(self, err, val):
@@ -34,11 +35,38 @@ class ShellOperation:
     def full_read(self):
         return self.__handle_error(self.__full_read.execute())
 
-    def test_app_1(self, value):
-        pass
+    def test_app_1(self, expected="0x12345678"):
+        is_mimatched = False
+        self.full_write(expected)
+        for lba in range(NUM_LBAS):
+            read_value = self.read(lba).val
+            if read_value != expected:
+                print(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
+                is_mimatched = True
+
+        if not is_mimatched:
+            print("Data is written well")
 
     def test_app_2(self):
-        pass
+        is_mimatched = False
+        deprecated = "0xAAAABBBB"
+        expected = "0x12345678"
+
+        for i in range(30):
+            for lba in range(0, 6):
+                self.write(lba, deprecated)
+
+        for lba in range(0, 6):
+            self.write(lba, expected)
+
+        for lba in range(0, 6):
+            read_value = self.read(lba).val
+            if read_value != expected:
+                print(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
+                is_mimatched = True
+
+        if not is_mimatched:
+            print("Data is written well")
 
     def help(self):
         print("write [LBA] [VAL]  : write val on LBA(ex. write 3 0xAAAABBBB)")
