@@ -69,8 +69,10 @@ class Shell:
             return False
 
         if input_operation == 'write' or input_operation == 'read':
-            lba = int(user_inputs[1])
-            if lba < 0 or lba > 99:
+            lba = user_inputs[1]
+            valid_lba = re.match('^[0-9]{1,2}$', lba)
+
+            if valid_lba is None:
                 print("[Warning] Invalid LBA!\nEnter 'help' for details.")
                 return False
 
