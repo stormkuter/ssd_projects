@@ -63,11 +63,14 @@ class Shell:
             try:
                 time.sleep(0.5)
                 user_inputs = self._get_user_input().split()
+                if not user_inputs: continue
+
                 input_operation = user_inputs[0]
 
-                if input_operation == 'exit':
+                if input_operation == "exit":
                     LOGGER.info('=============== SSD Shell Terminated!  ===============')
                     break
+
                 modules = test_scripts.list_modules()
 
                 if input_operation in modules:
@@ -88,12 +91,16 @@ class Shell:
                 else:
                     create_shell_command(input_operation).execute(*user_inputs[1:])
 
-            except Exception as ex:
-                LOGGER.info(ex)
-                LOGGER.info("[ERR] Invalid Input!!\nEnter 'help' for details.")
+            except Exception as e:
+                LOGGER.critical("Shell fail: " + str(e))
 
     def _get_user_input(self):
-        return input(">> ").strip()
+        try:
+            ret = input(">> ").strip()
+        except KeyboardInterrupt as e:
+            ret = "exit"
+
+        return ret
 
 
 if __name__ == "__main__":
