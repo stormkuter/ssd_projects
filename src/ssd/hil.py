@@ -1,5 +1,9 @@
 import enum
+
+from src.common.path import DATA_FILE_RESULT
+from src.ssd.command_buffer import CommandBuffer
 from src.ssd.fil import FlashInterfaceLayer
+from src.ssd.op_code import OpCode
 
 MIN_VALUE = 0
 MAX_VALUE = 2 ** 32 - 1
@@ -7,29 +11,46 @@ MIN_ADDRESS = 0
 MAX_ADDRESS = 99
 
 
-class OpCode(enum.Enum):
-    READ = "R"
-    WRITE = "W"
-    ERASE = "E"
-    FLUSH = "F"
-
-    @classmethod
-    def get_op_code_by(cls, command: str):
-        command = command.upper()
-        for op_code in OpCode:
-            if op_code.value == command:
-                return op_code
-        raise ValueError(f"잘못된 명령어가 입력되었습니다.: {command}")
-
-
 class HostInterfaceLayer:
 
-    def __init__(self):
+    def __init__(self, command_buffer: CommandBuffer):
         self.__fil = None
+        self.command_buffer = command_buffer
 
     def set_fil(self, fil: FlashInterfaceLayer):
         self.__fil = fil
 
+
+    # TODO :: 이 친구도 리팩토링 대상 1
+    def execute(self, *args):
+        self.__validation_args(args[1:])
+        op_code = OpCode.get_op_code_by(args[0])
+        lba = args[1]
+        if op_code == OpCode.READ:
+            try:
+                buffered_data = self.command_buffer.execute(args)
+                with open(DATA_FILE_RESULT, "w") as f:
+                    f.write(buffered_data)
+            except ValueError as ve:
+                self.__fil.read_lba(lba)
+        elif op_code == OpCode.FLUSH:
+            self.command_buffer.flush()
+            command_list = self.command_buffer.get_commands_requiring_save()
+            for command in command_list:
+                op_code = OpCode.get_op_code_by(command[0])
+                self.get_command(op_code, command[1:])
+        else:       # Wrtie / Erase
+            if self.command_buffer.is_full_commands():
+                self.command_buffer.flush()
+                command_list = self.command_buffer.get_commands_requiring_save()
+                for command in command_list:
+                    op_code = OpCode.get_op_code_by(command[0])
+                    self.get_command(op_code, command[1:])
+            else:
+                self.command_buffer.execute(args)
+
+
+    # TODO :: 이 친구도 리팩토링 대상 2
     def get_command(self, op_code: OpCode, *args, **kwargs):
         self.__validation_args(args)
         if op_code == OpCode.READ:
