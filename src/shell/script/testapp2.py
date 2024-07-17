@@ -1,28 +1,33 @@
-from src.shell.shell_script import ShellOperation
+from src.shell.shell_command import create_shell_command, ReturnObject
 from src.common import ssd_config
 
 
-class TestApp(ShellOperation):
+class TestApp:
     def main(self):
         is_mismatched = False
         expected = "0x12345678"
         deprecated = "0xAAAABBBB"
+        write_cmd = create_shell_command('write')
+        read_cmd = create_shell_command('read')
 
         for i in range(30):
             for lba in range(0, 6):
-                self.write(lba, deprecated)
+                write_cmd.execute(lba, deprecated)
 
         for lba in range(0, 6):
-            self.write(lba, expected)
+            write_cmd.execute(lba, expected)
 
         for lba in range(0, 6):
-            read_value = self.read(lba).val
+            read_value = read_cmd.execute(lba).val
             if read_value != expected:
                 print(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
                 is_mismatched = True
 
         if not is_mismatched:
             print("Data is written well")
+            return ReturnObject(0, read_value)
+        else:
+            return ReturnObject(8, read_value)
 
 
 def main():
