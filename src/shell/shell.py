@@ -1,5 +1,7 @@
 import os, sys
 import importlib
+import time
+
 import src.shell.script as test_scripts
 from src.common import path
 from src.common.logger import LOGGER
@@ -59,6 +61,7 @@ class Shell:
 
         while True:
             try:
+                time.sleep(0.5)
                 user_inputs = self._get_user_input().split()
                 input_operation = user_inputs[0]
 
