@@ -1,6 +1,7 @@
 import os, sys
 import importlib
 import src.shell.script as test_scripts
+from src.common import path
 from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command, ReturnObject
 
@@ -8,17 +9,13 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-TEST_BASE_DIR = os.path.join(BASE_DIR, "tests/data")
-
-
 class Shell:
     def __init__(self, args):
         self.__args = args
 
     def run(self):
         if len(self.__args) == 2:
-            run_list_file_path = os.path.join(TEST_BASE_DIR, self.__args[1])
+            run_list_file_path = os.path.join(path.TEST_BASE_DIR, self.__args[1])
             try:
                 run_list_file = open(run_list_file_path, "r")
             except Exception:
@@ -48,6 +45,7 @@ class Shell:
                                 print("Pass")
                             else:
                                 print("Fail!")
+                                run_list_file.close()
                                 return
                         else:
                             LOGGER.info(f"{full_module_name}.main() is not callable.")
