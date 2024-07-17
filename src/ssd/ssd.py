@@ -2,15 +2,17 @@
 import os
 import sys
 
+
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
 
 # local
 from src.ssd.fil import FlashInterfaceLayer
+from src.ssd.hil import HostInterfaceLayer
+from src.ssd.command_buffer import CommandBuffer
 from src.exception.exception_log import ExceptionLog
-from src.ssd.hil import HostInterfaceLayer, OpCode
-
 
 # DTO 랑 느낌이 비슷한데 그냥 Ssd를 HIL에 넘기는 방식으로 처리해도 될 듯...
 class Ssd:
@@ -26,7 +28,7 @@ class Ssd:
         self.hil = hil
 
     def set_commands(self, command):
-        self.__op_code = OpCode.get_op_code_by(command[1])
+        self.__op_code = command[1]
         self.__address = command[2]
         self.args.append(self.__address)
         if len(command) > 3:
@@ -48,15 +50,15 @@ class Ssd:
     # ssd.py w 1 2 3 4 이렇게 넣어도 뒤에는 무시하고 ssd.py w 1 2로 해석하고 실행.
     def run(self):
         if self.__value is not None:
-            self.hil.get_command(self.__op_code, self.__address, self.__value)
+            self.hil.execute(self.__op_code, self.__address, self.__value)
         else:
-            self.hil.get_command(self.__op_code, self.__address)
+            self.hil.execute(self.__op_code, self.__address)
 
 
 if __name__ == "__main__":
     commands = sys.argv
     ssd = Ssd()
-    hil = HostInterfaceLayer()
+    hil = HostInterfaceLayer(CommandBuffer())
     hil.set_fil(FlashInterfaceLayer())
     ssd.set_hil(hil)
 

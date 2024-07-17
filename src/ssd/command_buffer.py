@@ -2,7 +2,7 @@ import json
 import os
 
 from src.common.path import *
-from src.ssd.hil import OpCode
+from src.ssd.op_code import OpCode
 
 INIT_BUFFER_DATA = {"commands": [], "tempStorage": [[] for _ in range(100)]}
 ERASE_VALUE = "-1"
@@ -34,11 +34,11 @@ class CommandBuffer:
             json.dump(self.buffer_data, file, ensure_ascii=False, indent=4)
 
     # TODO:: Refactoring 필수 대상 2222
-    def execute(self, *args):
-        op_code = args[0]
+    def execute(self, args):
+        op_code = OpCode.get_op_code_by(args[0])
         if op_code == OpCode.READ:
             lba = args[1]
-            if self.is_value_present():
+            if self.is_value_present(lba):
                 return self.get_last_value(lba)
             else:
                 raise ValueError
