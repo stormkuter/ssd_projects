@@ -6,4 +6,4 @@ nand.txt
 result.txt
 *.log
 *.zip
-buffer.json
+*.json
