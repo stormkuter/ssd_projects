@@ -38,10 +38,26 @@ class Shell:
                 self.__op.full_write(user_inputs[1])
             elif input_operation == 'fullread':
                 self.__op.full_read()
-            elif input_operation == 'testapp1':
-                self.__op.test_app_1()
-            elif input_operation == 'testapp2':
-                self.__op.test_app_2()
+            elif input_operation == 'testapp1' or input_operation == 'testapp2':
+                import importlib
+                import src.shell.script as test_scripts
+
+                modules = test_scripts.list_modules()
+                if input_operation in modules:
+                    package_name = "src.shell.script"
+                    module_name = input_operation
+
+                    full_module_name = f"{package_name}.{module_name}"
+                    module = importlib.import_module(full_module_name)
+
+                    if hasattr(module, "main"):
+                        func = getattr(module, "main")
+                        if callable(func):
+                            func()
+                        else:
+                            print(f"{full_module_name}.main() is not callable.")
+                    else:
+                        print(f"{full_module_name}.main() is not found.")
 
     def _get_user_input(self):
         return input(">> ").strip()
