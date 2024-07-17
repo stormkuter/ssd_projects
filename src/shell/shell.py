@@ -2,14 +2,15 @@ import os, sys
 import importlib
 import time
 
-import src.shell.script as test_scripts
-from src.common import path
-from src.common.logger import LOGGER
-from src.shell.shell_command import create_shell_command, ReturnObject
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
+
+import src.shell.script as test_scripts
+from src.common import path
+from src.common.logger import LOGGER
+from src.shell.shell_command import create_shell_command, ReturnObject
 
 class Shell:
     def __init__(self, args):
