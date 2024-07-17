@@ -11,6 +11,8 @@ SSD_EXEC = os.path.join(SOURCE_SSD_DIR, "ssd.py")
 
 DATA_FILE_NAND = os.path.join(SOURCE_SSD_DIR, "data/nand.txt")
 DATA_FILE_RESULT = os.path.join(SOURCE_SSD_DIR, "data/result.txt")
+DATA_FILE_BUFFER = os.path.join(SOURCE_SSD_DIR, "data/buffer.json")
 
 TEST_DATA_FILE_NAND = os.path.join(TEST_BASE_DIR, "nand.txt")
 TEST_DATA_FILE_RESULT = os.path.join(TEST_BASE_DIR, "result.txt")
+TEST_DATA_FILE_BUFFER = os.path.join(TEST_BASE_DIR, "buffer.json")
