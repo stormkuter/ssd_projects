@@ -15,11 +15,11 @@ class TestApp:
         for lba in range(ssd_config.NUM_LBAS):
             read_value = read_cmd.execute(lba).val
             if read_value != expected:
-                LOGGER.info(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
+                LOGGER.debug(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
                 is_mismatched = True
 
         if not is_mismatched:
-            LOGGER.info("Data is written well")
+            LOGGER.debug("Data is written well")
             return ReturnObject(0, read_value)
         else:
             return ReturnObject(7, read_value)

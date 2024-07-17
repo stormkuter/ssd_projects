@@ -15,7 +15,7 @@ class ReturnObject:
 
         if self.err:
             func = inspect.currentframe().f_back.f_back.f_code.co_name
-            LOGGER.info(f"[ERR] error_code {self.err}, return_value {self.val} @{func}")
+            LOGGER.debug(f"[ERR] error_code {self.err}, return_value {self.val} @{func}")
 
 
 class ICommand(ABC):
@@ -41,7 +41,7 @@ class ReadCommand(ICommand):
 
         with open(path.DATA_FILE_RESULT, "r") as result_file:
             ret = result_file.readline()
-            LOGGER.info(ret)
+            LOGGER.debug(ret)
 
         return ReturnObject(self._ssd_sp.returncode, ret)
 
@@ -89,19 +89,18 @@ class EraseRangeCommand(ICommand):
 
 class HelpCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
-        LOGGER.info("write [LBA] [VAL]  : write val on LBA(ex. write 3 0xAAAABBBB)")
-        LOGGER.info("read [LBA]         : read val on LBA(ex. read 3)")
-        LOGGER.info("erase [LBA] [SIZE] : erase val from LBA within size (ex. erase 3 5)")
-        LOGGER.info("MAX SIZE: 10")
-        LOGGER.info("flush              : flush current buffer")
-        LOGGER.info("exit               : exit program")
-        LOGGER.info("help               : manual")
-        LOGGER.info("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
-        LOGGER.info("fullread           : read all val on LBA")
-        LOGGER.info("erase_range [START_LBA] [END_LBA] : erase val from START_LBA to END_LBA size (ex. erase_rage 10 15)")
+        LOGGER.debug("write [LBA] [VAL]  : write val on LBA(ex. write 3 0xAAAABBBB)")
+        LOGGER.debug("read [LBA]         : read val on LBA(ex. read 3)")
+        LOGGER.debug("erase [LBA] [SIZE] : erase val from LBA within size (ex. erase 3 5)")
+        LOGGER.debug("MAX SIZE: 10")
+        LOGGER.debug("flush              : flush current buffer")
+        LOGGER.debug("exit               : exit program")
+        LOGGER.debug("help               : manual")
+        LOGGER.debug("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
+        LOGGER.debug("fullread           : read all val on LBA")
+        LOGGER.debug("erase_range [START_LBA] [END_LBA] : erase val from START_LBA to END_LBA size (ex. erase_rage 10 15)")
 
         return ReturnObject(0, None)
-
 
 
 def create_shell_command(operation):
