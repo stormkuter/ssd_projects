@@ -1,15 +1,13 @@
-import os
-
+from src.common import ssd_config
 from src.common.path import *
 
 INIT_VALUE = '0x00000000'
-MAX_ADDRESS = 100
 
 
 class FlashInterfaceLayer:
     def __init__(self, is_test: bool = False):
         self.__flash_map = {}
-        self.__lazy_update = False
+        self.__cache = False
 
         if is_test:
             self.folder_path = TEST_BASE_DIR
@@ -28,7 +26,7 @@ class FlashInterfaceLayer:
             os.mkdir(self.folder_path)
         if not os.path.exists(self.nand_file_path):
             with open(self.nand_file_path, "w") as f:
-                for i in range(MAX_ADDRESS - 1):
+                for i in range(ssd_config.NUM_LBAS - 1):
                     f.write(f'{INIT_VALUE}\n')
                 f.write(f'{INIT_VALUE}')
         if not os.path.exists(self.result_file_path):
@@ -41,29 +39,34 @@ class FlashInterfaceLayer:
 
     def write_lba(self, lba, value):
         self.__flash_map[lba] = value
-        if not self.__lazy_update:
-            with open(self.nand_file_path, "w") as f:
-                for i in range(MAX_ADDRESS - 1):
-                    f.write(f'{self.__flash_map[str(i)]}\n')
-                f.write(f'{self.__flash_map[str(MAX_ADDRESS - 1)]}')
+        if not self.__cache:
+            self.flush()
 
     def read_lba(self, lba):
-        if not self.__lazy_update:
+        if not self.__cache:
             # update result.txt
             with open(self.result_file_path, "w") as f:
                 f.write(self.__flash_map[lba])
-            pass
         return self.__flash_map[lba]
 
+    def erase_lba(self, lba, size):
+        for i in range(int(size)):
+            self.__flash_map[str(int(lba, 16)+i)] = INIT_VALUE
+
+        if not self.__cache:
+            self.flush()
+
     def flush(self):
-        # update nand.txt, result.txt
-        pass
+        with open(self.nand_file_path, "w") as f:
+            for i in range(ssd_config.NUM_LBAS - 1):
+                f.write(f'{self.__flash_map[str(i)]}\n')
+            f.write(f'{self.__flash_map[str(ssd_config.NUM_LBAS - 1)]}')
 
-    def enable_lasy_update(self):
-        self.__lazy_update = False
+    def enable_cache(self):
+        self.__cache = False
 
-    def disable_lasy_update(self):
-        self.__lazy_update = True
+    def disable_cache(self):
+        self.__cache = True
 
     def get_folder_path(self):
         return self.folder_path
