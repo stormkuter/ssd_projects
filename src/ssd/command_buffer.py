@@ -49,12 +49,14 @@ class CommandBuffer:
             lba, value = args[1:3]
             self.add_command(command, lba, value)
             self.update_temp_storage(lba, value)
+            self.update_file()
 
         if op_code == OpCode.ERASE:
             start_lba, end_lba = args[1:3]
             self.add_command(command, start_lba, end_lba)
             for lba in range(int(start_lba, int(end_lba))):
                 self.update_temp_storage(str(lba), ERASE_VALUE)
+            self.update_file()
 
         if op_code == OpCode.FLUSH:
             self.flush()
