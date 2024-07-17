@@ -1,6 +1,8 @@
 import glob
 import inspect
 import logging
+
+LOGGING_FORMATTER = logging.Formatter('[%(asctime)s] %(func_name)-40s [line: %(func_lino)s]] : %(message)s', datefmt='%Y-%m-%d %H:%M')
 import os
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
@@ -41,20 +43,18 @@ class SingletonMeta(type):
 class Logger(metaclass=SingletonMeta):
     def __init__(self, name='CustomLogger', level=logging.INFO):
         self.logger = logging.getLogger(name)
-        self.formatter = logging.Formatter('[%(asctime)s] %(func_name)-40s [line: %(func_lino)s]] : %(message)s',
-                                           datefmt='%Y-%m-%d %H:%M')
         self.logger.setLevel(level)
         self._setup_handler()
 
     def create_file_handler(self):
         file_handler = CustomRotatingFileHandler(LOG_FILE_PATH, maxBytes=10240, backupCount=1024)
-        file_handler.setFormatter(self.formatter)
+        file_handler.setFormatter(LOGGING_FORMATTER)
         file_handler.setLevel(logging.INFO)
         return file_handler
 
     def create_stream_handler(self):
         stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(self.formatter)
+        stream_handler.setFormatter(LOGGING_FORMATTER)
         stream_handler.setLevel(logging.INFO)
         return stream_handler
 
