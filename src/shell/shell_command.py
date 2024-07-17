@@ -46,21 +46,27 @@ class ReadCommand(ICommand):
 
 class FullWriteCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
-        # system call full wrtie
+        write_cmd = WriteCommand()
         for lba in range(MAX_LBA_LEN):
             self._system_call_ssd('W', lba, *args)
         return ReturnObject(self._ssd_sp.returncode, None)
+            ret = write_cmd.execute(lba, *args)
+        return ret
 
 
 class FullReadCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
-        # system call full read
+        read_cmd = ReadCommand()
         for lba in range(MAX_LBA_LEN):
             self._system_call_ssd('R', lba)
             with open(path.DATA_FILE_RESULT, "r") as result_file:
                 ret = result_file.readline()
                 print(ret)
         return ReturnObject(self._ssd_sp.returncode, None)
+            ret = read_cmd.execute(lba)
+        return ret
+
+
 
 
 class HelpCommand(ICommand):
