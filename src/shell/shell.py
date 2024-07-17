@@ -13,8 +13,13 @@ from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command, ReturnObject
 
 class Shell:
+
     def __init__(self, args):
         self.__args = args
+        create_shell_command('flush').execute()
+
+    def __del__(self):
+        create_shell_command('flush').execute()
 
     def run(self):
         if len(self.__args) == 2:
