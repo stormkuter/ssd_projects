@@ -53,6 +53,12 @@ class EraseCommand(ICommand):
         return ReturnObject(self._ssd_sp.returncode, None)
 
 
+class FlushCommand(ICommand):
+    def execute(self, *args) -> ReturnObject:
+        # system call flush
+        self._system_call_ssd('F', *args)
+        return ReturnObject(self._ssd_sp.returncode, None)
+
 class FullWriteCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
         write_cmd = WriteCommand()
@@ -87,6 +93,7 @@ class HelpCommand(ICommand):
         LOGGER.info("read [LBA]         : read val on LBA(ex. read 3)")
         LOGGER.info("erase [LBA] [SIZE] : erase val from LBA within size (ex. erase 3 5)")
         LOGGER.info("MAX SIZE: 10")
+        LOGGER.info("flush              : flush current buffer")
         LOGGER.info("exit               : exit program")
         LOGGER.info("help               : manual")
         LOGGER.info("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
@@ -96,6 +103,7 @@ class HelpCommand(ICommand):
         return ReturnObject(0, None)
 
 
+
 def create_shell_command(operation):
     if operation == 'write':
         return WriteCommand()
@@ -103,6 +111,8 @@ def create_shell_command(operation):
         return ReadCommand()
     elif operation == 'erase':
         return EraseCommand()
+    elif operation == 'flush':
+        return FlushCommand()
     elif operation == 'fullwrite':
         return FullWriteCommand()
     elif operation == 'fullread':
