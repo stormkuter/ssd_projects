@@ -21,8 +21,8 @@ class CommandBuffer:
             self.buffer_data = json.load(file)
 
     def initialize_file(self):
-        if not os.path.exists(SOURCE_BASE_DIR):
-            os.mkdir(SOURCE_BASE_DIR)
+        if not os.path.exists(SOURCE_SSD_DATA_DIR):
+            os.mkdir(SOURCE_SSD_DATA_DIR)
         if not os.path.exists(DATA_FILE_BUFFER):
             with open(DATA_FILE_BUFFER, "w") as file:
                 json.dump(INIT_BUFFER_DATA, file, ensure_ascii=False, indent=4)
