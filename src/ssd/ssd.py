@@ -21,7 +21,6 @@ class Ssd:
         self.__op_code = None
         self.__address = None
         self.__value = None
-        self.__size = None
 
     def set_hil(self, hil: HostInterfaceLayer):
         self.hil = hil
