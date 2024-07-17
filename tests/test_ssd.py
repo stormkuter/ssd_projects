@@ -39,4 +39,4 @@ class TestSSD(TestCase):
         with self.assertRaises(AttributeError) as ae:
             ssd = Ssd()
             ssd.run()
-        LOGGER.info(str(ae.exception))
+        LOGGER.debug(str(ae.exception))

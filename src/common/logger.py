@@ -2,12 +2,13 @@ import glob
 import inspect
 import logging
 
-LOGGING_FORMATTER = logging.Formatter('[%(asctime)s] %(func_name)-40s [line: %(func_lino)s]] : %(message)s', datefmt='%Y-%m-%d %H:%M')
 import os
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
-
 from src.common.path import LOG_FILE_PATH, LOG_DIR_PATH
+
+LOGGING_FORMATTER = logging.Formatter('[%(asctime)s] %(func_name)-40s [line: %(func_lino)s]] : %(message)s',
+                                      datefmt='%Y-%m-%d %H:%M')
 
 
 class CustomRotatingFileHandler(RotatingFileHandler):
@@ -41,33 +42,35 @@ class SingletonMeta(type):
 
 
 class Logger(metaclass=SingletonMeta):
-    def __init__(self, name='CustomLogger', level=logging.INFO):
+    def __init__(self, name='CustomLogger', level=logging.DEBUG):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
         self._setup_handler()
 
-    def create_file_handler(self):
+    def create_file_handler(self, log_level=logging.DEBUG):
         file_handler = CustomRotatingFileHandler(LOG_FILE_PATH, maxBytes=10240, backupCount=1024)
         file_handler.setFormatter(LOGGING_FORMATTER)
-        file_handler.setLevel(logging.INFO)
+        file_handler.setLevel(log_level)
         return file_handler
 
-    def create_stream_handler(self):
+    def create_stream_handler(self, log_level=logging.DEBUG):
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(LOGGING_FORMATTER)
-        stream_handler.setLevel(logging.INFO)
+        stream_handler.setLevel(log_level)
         return stream_handler
 
     def _setup_handler(self):
         self.logger.handlers.clear()
-        stream_handler = self.create_stream_handler()
-        file_handler = self.create_file_handler()
+        stream_handler = self.create_stream_handler(logging.DEBUG)
+        file_handler = self.create_file_handler(logging.DEBUG)
         self.logger.addHandler(stream_handler)
         self.logger.addHandler(file_handler)
 
-    def set_stream_handler_silence(self):
+    def set_to_runner_mode_log_handler(self):
         self.logger.handlers.clear()
-        file_handler = self.create_file_handler()
+        stream_handler = self.create_stream_handler(logging.INFO)
+        file_handler = self.create_file_handler(logging.DEBUG)
+        self.logger.addHandler(stream_handler)
         self.logger.addHandler(file_handler)
 
     def _log_with_func_name(self, level, msg):
@@ -81,8 +84,8 @@ class Logger(metaclass=SingletonMeta):
 
     def _archive_older_logfiles(self):
         sorted_log_file_list = sorted(glob.glob(LOG_DIR_PATH + "/until_*.log"))
-        if len(sorted_log_file_list) > 2:
-            sorted_log_file_list.pop(0)
+        if len(sorted_log_file_list) > 1:
+            sorted_log_file_list.pop(-1)
             for fn in sorted_log_file_list:
                 without_extension_filename = os.path.splitext(os.path.basename(fn))[0]
                 convert_extension_to_zip = os.path.join(LOG_DIR_PATH, without_extension_filename + ".zip")

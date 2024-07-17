@@ -55,14 +55,14 @@ class Shell:
                                 return
                             print("Pass")
                         else:
-                            LOGGER.info(f"{full_module_name}.main() is not callable.")
+                            LOGGER.debug(f"{full_module_name}.main() is not callable.")
                     else:
-                        LOGGER.info(f"{full_module_name}.main() is not found.")
+                        LOGGER.debug(f"{full_module_name}.main() is not found.")
 
             run_list_file.close()
             return
 
-        LOGGER.info('================= SSD Shell Started! =================')
+        LOGGER.debug('================= SSD Shell Started! =================')
 
         while True:
             try:
@@ -73,7 +73,7 @@ class Shell:
                 input_operation = user_inputs[0]
 
                 if input_operation == "exit":
-                    LOGGER.info('=============== SSD Shell Terminated!  ===============')
+                    LOGGER.debug('=============== SSD Shell Terminated!  ===============')
                     break
 
                 modules = test_scripts.list_modules()
@@ -90,9 +90,9 @@ class Shell:
                         if callable(func):
                             func()
                         else:
-                            LOGGER.info(f"{full_module_name}.main() is not callable.")
+                            LOGGER.debug(f"{full_module_name}.main() is not callable.")
                     else:
-                        LOGGER.info(f"{full_module_name}.main() is not found.")
+                        LOGGER.debug(f"{full_module_name}.main() is not found.")
                 else:
                     create_shell_command(input_operation).execute(*user_inputs[1:])
 
