@@ -12,4 +12,14 @@ class ExceptionLog:
     def get_log_msg(cls, ex: Exception, msg: str):
         now_time = datetime.datetime.now().strftime("%y-%m-%d %H:%M:%S")
         header = f"[ {now_time} ] "
-        return header + msg + ": " + str(ex)
+        return msg + ": " + str(ex)
+
+
+class InvalidCommandException(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
+
+
+class InvalidCommandArgumentException(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
