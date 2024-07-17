@@ -44,12 +44,11 @@ class Shell:
                         func = getattr(module, "main")
                         if callable(func):
                             ret: ReturnObject = func()
-                            if ret.err != "0":
-                                print("Pass")
-                            else:
+                            if ret.err != 0:
                                 print("Fail!")
                                 run_list_file.close()
                                 return
+                            print("Pass")
                         else:
                             LOGGER.info(f"{full_module_name}.main() is not callable.")
                     else:
