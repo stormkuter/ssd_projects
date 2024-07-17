@@ -1,6 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock
 
+from src.common.logger import LOGGER
 from src.ssd.hil import HostInterfaceLayer, OpCode
 
 TEST_READ_COMMAND_INPUT = OpCode.READ
@@ -26,7 +27,7 @@ class TestHostInterfaceLayer(TestCase):
         # act & assert
         with self.assertRaises(ValueError) as ve:
             OpCode.get_op_code_by(TEST_WRONG_COMMAND_INPUT)
-        print(str(ve.exception))
+        LOGGER.info(str(ve.exception))
 
     def test_get_command_should_call_fil_method(self):
         # act
@@ -41,8 +42,8 @@ class TestHostInterfaceLayer(TestCase):
         # act & assert
         with self.assertRaises(ValueError) as ve:
             self.sut_hil.get_command(TEST_READ_COMMAND_INPUT, TEST_WRONG_ADDRESS)
-        print(str(ve.exception))
+        LOGGER.info(str(ve.exception))
 
         with self.assertRaises(ValueError) as ve:
             self.sut_hil.get_command(TEST_WRITE_COMMAND_INPUT, TEST_ADDRESS, TEST_WRONG_VALUE)
-        print(str(ve.exception))
+        LOGGER.info(str(ve.exception))

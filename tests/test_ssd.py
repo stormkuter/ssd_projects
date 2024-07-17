@@ -1,6 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock
 
+from src.common.logger import LOGGER
 from src.ssd.hil import HostInterfaceLayer, OpCode
 from src.ssd.ssd import Ssd
 
@@ -38,4 +39,4 @@ class TestSSD(TestCase):
         with self.assertRaises(AttributeError) as ae:
             ssd = Ssd()
             ssd.run()
-        print(str(ae.exception))
+        LOGGER.info(str(ae.exception))

@@ -2,6 +2,7 @@ import inspect
 import subprocess
 from abc import ABC, abstractmethod
 from src.common import path
+from src.common.logger import LOGGER
 
 MAX_LBA_LEN = 100
 
@@ -13,7 +14,7 @@ class ReturnObject:
 
         if self.err:
             func = inspect.currentframe().f_back.f_back.f_code.co_name
-            print(f"[ERR] error_code {self.err}, return_value {self.val} @{func}")
+            LOGGER.info(f"[ERR] error_code {self.err}, return_value {self.val} @{func}")
 
 
 class ICommand(ABC):
@@ -22,7 +23,6 @@ class ICommand(ABC):
         pass
 
     def _system_call_ssd(self, operation, *args):
-        print(f"python {path.SSD_EXEC} {operation} {' '.join(str(arg) for arg in args)}")
         self._ssd_sp = subprocess.run(f"python {path.SSD_EXEC} {operation} {' '.join(str(arg) for arg in args)}")
 
 
@@ -40,7 +40,7 @@ class ReadCommand(ICommand):
 
         with open(path.DATA_FILE_RESULT, "r") as result_file:
             ret = result_file.readline()
-            print(ret)
+            LOGGER.info(ret)
 
         return ReturnObject(self._ssd_sp.returncode, ret)
 
@@ -77,15 +77,15 @@ class EraseRangeCommand(ICommand):
 
 class HelpCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
-        print("write [LBA] [VAL]  : write val on LBA(ex. write 3 0xAAAABBBB)")
-        print("read [LBA]         : read val on LBA(ex. read 3)")
-        print("erase [LBA] [SIZE] : erase val from LBA within size (ex. erase 3 5)")
-        print("MAX SIZE: 10")
-        print("exit               : exit program")
-        print("help               : manual")
-        print("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
-        print("fullread           : read all val on LBA")
-        print("erase_range [START_LBA] [END_LBA] : erase val from START_LBA to END_LBA size (ex. erase_rage 10 15)")
+        LOGGER.info("write [LBA] [VAL]  : write val on LBA(ex. write 3 0xAAAABBBB)")
+        LOGGER.info("read [LBA]         : read val on LBA(ex. read 3)")
+        LOGGER.info("erase [LBA] [SIZE] : erase val from LBA within size (ex. erase 3 5)")
+        LOGGER.info("MAX SIZE: 10")
+        LOGGER.info("exit               : exit program")
+        LOGGER.info("help               : manual")
+        LOGGER.info("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
+        LOGGER.info("fullread           : read all val on LBA")
+        LOGGER.info("erase_range [START_LBA] [END_LBA] : erase val from START_LBA to END_LBA size (ex. erase_rage 10 15)")
 
         return ReturnObject(0, None)
 
@@ -106,4 +106,4 @@ def create_shell_command(operation):
     elif operation == 'help':
         return HelpCommand()
     else:
-        print("[ERR] Invalid Command")
+        LOGGER.info("[ERR] Invalid Command")

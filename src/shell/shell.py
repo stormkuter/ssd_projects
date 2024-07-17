@@ -1,6 +1,7 @@
 import os, sys
 import importlib
 import src.shell.script as test_scripts
+from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -11,7 +12,7 @@ sys.path.append(parent_directory)
 class Shell:
 
     def run(self):
-        print('================= SSD Shell Started! =================')
+        LOGGER.info('================= SSD Shell Started! =================')
 
         while True:
             try:
@@ -19,7 +20,7 @@ class Shell:
                 input_operation = user_inputs[0]
 
                 if input_operation == 'exit':
-                    print('=============== SSD Shell Terminated!  ===============')
+                    LOGGER.info('=============== SSD Shell Terminated!  ===============')
                     break
                 modules = test_scripts.list_modules()
 
@@ -35,15 +36,15 @@ class Shell:
                         if callable(func):
                             func()
                         else:
-                            print(f"{full_module_name}.main() is not callable.")
+                            LOGGER.info(f"{full_module_name}.main() is not callable.")
                     else:
-                        print(f"{full_module_name}.main() is not found.")
+                        LOGGER.info(f"{full_module_name}.main() is not found.")
                 else:
                     create_shell_command(input_operation).execute(*user_inputs[1:])
 
             except Exception as ex:
-                print(ex)
-                print("[ERR] Invalid Input!!\nEnter 'help' for details.")
+                LOGGER.info(ex)
+                LOGGER.info("[ERR] Invalid Input!!\nEnter 'help' for details.")
 
     def _get_user_input(self):
         return input(">> ").strip()
