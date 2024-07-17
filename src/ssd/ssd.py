@@ -21,16 +21,14 @@ class Ssd:
         self.__op_code = None
         self.__address = None
         self.__value = None
-        self.__extra_commands = []
-        self.args = []
 
     def set_hil(self, hil: HostInterfaceLayer):
         self.hil = hil
 
     def set_commands(self, command):
         self.__op_code = command[1]
-        self.__address = command[2]
-        self.args.append(self.__address)
+        if len(command) > 2:
+            self.__address = command[2]
         if len(command) > 3:
             self.__value = command[3]
 
@@ -43,16 +41,15 @@ class Ssd:
     def get_value(self):
         return self.__value
 
-    def get_extra_commands(self):
-        return self.__extra_commands
-
     # extra command는 무시한다.
     # ssd.py w 1 2 3 4 이렇게 넣어도 뒤에는 무시하고 ssd.py w 1 2로 해석하고 실행.
     def run(self):
         if self.__value is not None:
             self.hil.execute(self.__op_code, self.__address, self.__value)
-        else:
+        elif self.__address is not None:
             self.hil.execute(self.__op_code, self.__address)
+        else:
+            self.hil.execute(self.__op_code)
 
 
 if __name__ == "__main__":

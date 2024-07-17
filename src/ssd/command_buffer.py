@@ -17,8 +17,13 @@ class CommandBuffer:
 
     def __read_buffer_file(self):
         self.initialize_file()
-        with open(DATA_FILE_BUFFER, "r") as file:
-            self.buffer_data = json.load(file)
+        with open(DATA_FILE_BUFFER, "r+") as file:
+            # 파일은 있는데 내용이 비어있는 경우 대응
+            try:
+                self.buffer_data = json.load(file)
+            except:
+                print(self.buffer_data)
+                json.dump(INIT_BUFFER_DATA, file, ensure_ascii=False, indent=4)
 
     def initialize_file(self):
         if not os.path.exists(SOURCE_SSD_DATA_DIR):

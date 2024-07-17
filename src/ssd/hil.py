@@ -25,14 +25,13 @@ class HostInterfaceLayer:
     def execute(self, *args):
         self.__validation_args(args)
         op_code = OpCode.get_op_code_by(args[0])
-        lba = args[1]
         if op_code == OpCode.READ:
             try:
                 buffered_data = self.command_buffer.execute(args)
                 with open(DATA_FILE_RESULT, "w") as f:
                     f.write(buffered_data)
             except ValueError as ve:
-                self.__fil.read_lba(lba)
+                self.__fil.read_lba(args[1])
         elif op_code == OpCode.FLUSH:
             self.command_buffer.flush()
             command_list = self.command_buffer.get_commands_requiring_save()
@@ -52,7 +51,7 @@ class HostInterfaceLayer:
 
     # TODO :: 이 친구도 리팩토링 대상 2
     def get_command(self, op_code: OpCode, *args, **kwargs):
-        self.__validation_args(args)
+        args = args[0]
         if op_code == OpCode.READ:
             self.__fil.read_lba(args[0])
         elif op_code == OpCode.WRITE:
