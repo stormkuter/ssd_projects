@@ -45,8 +45,7 @@ class HostInterfaceLayer:
                 for command in command_list:
                     op_code = OpCode.get_op_code_by(command[0])
                     self.get_command(op_code, command[1:])
-            else:
-                self.command_buffer.execute(args)
+            self.command_buffer.execute(args)
 
 
     # TODO :: 이 친구도 리팩토링 대상 2
@@ -75,7 +74,10 @@ class HostInterfaceLayer:
 
     def __validation_of_value(self, value: str):
         if len(value) != 10 or value[:2] != "0x":
-            raise ValueError(f"입력된 값의 형식이 잘못 되었습니다.: {value}")
+            if value.isdigit() and 1 <= int(value) <= 10:
+                return
+            else:
+                raise ValueError(f"입력된 값의 형식이 잘못 되었습니다.: {value}")
         result_value = 0
         for i in range(2, 10):
             result_value += self.__to_int(value[i]) * 16 ** (9-i)

@@ -58,13 +58,14 @@ class CommandBuffer:
 
         if op_code == OpCode.ERASE:
             start_lba, end_lba = args[1:3]
+            end_lba = start_lba + end_lba
             self.add_command(command, start_lba, end_lba)
-            for lba in range(int(start_lba, int(end_lba))):
+            for lba in range(int(start_lba), int(end_lba)):
                 self.update_temp_storage(str(lba), ERASE_VALUE)
-            self.update_file()
 
         if op_code == OpCode.FLUSH:
             self.flush()
+            self.update_file()
             return self.get_commands_requiring_save()
 
     def add_command(self, *args):
@@ -112,6 +113,7 @@ class CommandBuffer:
 
         self.commands_to_return = min(self.commands_to_return,temp_command_list)
         self.buffer_data = INIT_BUFFER_DATA
+        self.update_file()
 
     def get_commands_requiring_save(self):
         return self.commands_to_return
