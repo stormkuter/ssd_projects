@@ -4,7 +4,7 @@ from src.common import ssd_config
 
 
 class TestApp:
-    def main(self):
+    def main(self) -> ReturnObject:
         is_mismatched = False
         expected = "0x12345678"
 
@@ -27,4 +27,4 @@ class TestApp:
 
 def main():
     app = TestApp()
-    app.main()
+    return app.main()

@@ -2,16 +2,61 @@ import os, sys
 import importlib
 import src.shell.script as test_scripts
 from src.common.logger import LOGGER
-from src.shell.shell_command import create_shell_command
+from src.shell.shell_command import create_shell_command, ReturnObject
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+TEST_BASE_DIR = os.path.join(BASE_DIR, "tests/data")
+
 
 class Shell:
+    def __init__(self, args):
+        self.__args = args
 
     def run(self):
+        if len(self.__args) == 2:
+            run_list_file_path = os.path.join(TEST_BASE_DIR, self.__args[1])
+            try:
+                run_list_file = open(run_list_file_path, "r")
+            except Exception:
+                print("No Exist Scenario File!")
+                return
+
+            while True:
+                test_scenario = run_list_file.readline().strip()
+                if not test_scenario:
+                    break
+                # 중복 코드
+                modules = test_scripts.list_modules()
+
+                if test_scenario in modules:
+                    print(f"{test_scenario} --- Run...", end="")
+                    package_name = "src.shell.script"
+                    module_name = test_scenario
+
+                    full_module_name = f"{package_name}.{module_name}"
+                    module = importlib.import_module(full_module_name)
+
+                    if hasattr(module, "main"):
+                        func = getattr(module, "main")
+                        if callable(func):
+                            ret: ReturnObject = func()
+                            if ret.err != "0":
+                                print("Pass")
+                            else:
+                                print("Fail!")
+                                return
+                        else:
+                            LOGGER.info(f"{full_module_name}.main() is not callable.")
+                    else:
+                        LOGGER.info(f"{full_module_name}.main() is not found.")
+
+            run_list_file.close()
+            return
+
         LOGGER.info('================= SSD Shell Started! =================')
 
         while True:
@@ -51,5 +96,6 @@ class Shell:
 
 
 if __name__ == "__main__":
-    shell = Shell()
+    args = sys.argv
+    shell = Shell(args)
     shell.run()
