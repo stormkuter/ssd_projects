@@ -16,3 +16,6 @@ DATA_FILE_RESULT = os.path.join(SOURCE_SSD_DIR, "data/result.txt")
 
 TEST_DATA_FILE_NAND = os.path.join(TEST_BASE_DIR, "nand.txt")
 TEST_DATA_FILE_RESULT = os.path.join(TEST_BASE_DIR, "result.txt")
+
+LOG_DIR_PATH = os.path.join(SOURCE_BASE_DIR, "common")
+LOG_FILE_PATH = os.path.join(LOG_DIR_PATH, "latest.log")
