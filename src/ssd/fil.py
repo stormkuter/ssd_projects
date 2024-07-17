@@ -14,7 +14,7 @@ class FlashInterfaceLayer:
             self.nand_file_path = TEST_DATA_FILE_NAND
             self.result_file_path = TEST_DATA_FILE_RESULT
         else:
-            self.folder_path = os.path.join(SOURCE_SSD_DIR, "data")
+            self.folder_path = SOURCE_SSD_DATA_DIR
             self.nand_file_path = DATA_FILE_NAND
             self.result_file_path = DATA_FILE_RESULT
 
