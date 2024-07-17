@@ -4,3 +4,5 @@ __pycache__
 .pytest_cache
 nand.txt
 result.txt
+*.log
+*.zip
