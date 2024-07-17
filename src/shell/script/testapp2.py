@@ -1,3 +1,4 @@
+from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command, ReturnObject
 from src.common import ssd_config
 
@@ -20,11 +21,11 @@ class TestApp:
         for lba in range(0, 6):
             read_value = read_cmd.execute(lba).val
             if read_value != expected:
-                print(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
+                LOGGER.info(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
                 is_mismatched = True
 
         if not is_mismatched:
-            print("Data is written well")
+            LOGGER.info("Data is written well")
             return ReturnObject(0, read_value)
         else:
             return ReturnObject(8, read_value)
