@@ -1,15 +1,8 @@
 {
     "commands": [
-        [
-            "W",
-            "1",
-            "0xFFFFFFFF"
-        ]
     ],
     "tempStorage": [
-        [
-            "0xFFFFFFFF"
-        ],
+        [],
         [],
         [],
         [],

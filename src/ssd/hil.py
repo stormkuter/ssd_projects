@@ -23,7 +23,7 @@ class HostInterfaceLayer:
 
     # TODO :: 이 친구도 리팩토링 대상 1
     def execute(self, *args):
-        self.__validation_args(args[1:])
+        self.__validation_args(args)
         op_code = OpCode.get_op_code_by(args[0])
         lba = args[1]
         if op_code == OpCode.READ:
@@ -65,10 +65,10 @@ class HostInterfaceLayer:
     def __validation_args(self, args):
         if len(args) == 0:
             raise ValueError("입력 주소 및 값이 없습니다.")
-        self.__validation_of_address(args[0])
-
-        if len(args) == 2:
-            self.__validation_of_value(args[1])
+        if len(args) > 1:
+            self.__validation_of_address(args[1])
+        if len(args) == 3:
+            self.__validation_of_value(args[2])
 
     def __validation_of_address(self, address):
         if not isinstance(address, str) or (MIN_ADDRESS > int(address)) or (int(address) > MAX_ADDRESS):
