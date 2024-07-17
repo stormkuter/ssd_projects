@@ -23,7 +23,7 @@ class Shell:
 
     def run(self):
         if len(self.__args) == 2:
-            LOGGER.set_to_runner_mode_log_handler()
+            LOGGER.setup_handler(True)
             run_list_file_path = os.path.join(path.TEST_BASE_DIR, self.__args[1])
             try:
                 run_list_file = open(run_list_file_path, "r")

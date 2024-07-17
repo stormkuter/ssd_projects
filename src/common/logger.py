@@ -7,7 +7,7 @@ from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from src.common.path import LOG_FILE_PATH, LOG_DIR_PATH
 
-LOGGING_FORMATTER = logging.Formatter('[%(asctime)s] %(func_name)-40s [line: %(func_lino)s]] : %(message)s',
+LOGGING_FORMATTER = logging.Formatter('[%(asctime)s] %(func_name)-30s [%(file_name)s : %(func_lino)-4s] : %(message)s',
                                       datefmt='%Y-%m-%d %H:%M')
 
 
@@ -19,15 +19,13 @@ class CustomRotatingFileHandler(RotatingFileHandler):
         if self.stream:
             self.stream.close()
             self.stream = None
-        # Determine the rollover filename format
+
         current_time = datetime.now().strftime("until_%y%m%d_%Hh_%Mm_%Ss")
         rollover_filename = os.path.join(LOG_DIR_PATH, f"{current_time}.log")
 
-        # Rename the current log file to the rollover filename
         if os.path.exists(self.baseFilename):
             os.rename(self.baseFilename, rollover_filename)
 
-        # Reopen the log file in write mode
         self.mode = 'w'
         self.stream = self._open()
 
@@ -42,10 +40,10 @@ class SingletonMeta(type):
 
 
 class Logger(metaclass=SingletonMeta):
-    def __init__(self, name='CustomLogger', level=logging.DEBUG):
+    def __init__(self, level, name='CustomLogger'):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
-        self._setup_handler()
+        self.setup_handler()
 
     def create_file_handler(self, log_level=logging.DEBUG):
         file_handler = CustomRotatingFileHandler(LOG_FILE_PATH, maxBytes=10240, backupCount=1024)
@@ -59,16 +57,13 @@ class Logger(metaclass=SingletonMeta):
         stream_handler.setLevel(log_level)
         return stream_handler
 
-    def _setup_handler(self):
+    def setup_handler(self, is_runner=False):
         self.logger.handlers.clear()
-        stream_handler = self.create_stream_handler(logging.DEBUG)
-        file_handler = self.create_file_handler(logging.DEBUG)
-        self.logger.addHandler(stream_handler)
-        self.logger.addHandler(file_handler)
+        if is_runner:
+            stream_handler = self.create_stream_handler(logging.INFO)
+        else:
+            stream_handler = self.create_stream_handler(logging.DEBUG)
 
-    def set_to_runner_mode_log_handler(self):
-        self.logger.handlers.clear()
-        stream_handler = self.create_stream_handler(logging.INFO)
         file_handler = self.create_file_handler(logging.DEBUG)
         self.logger.addHandler(stream_handler)
         self.logger.addHandler(file_handler)
@@ -77,9 +72,10 @@ class Logger(metaclass=SingletonMeta):
         self._archive_older_logfiles()
 
         frame = inspect.currentframe().f_back.f_back
-        module_func_name = frame.f_code.co_qualname
-        func_line_number = frame.f_code.co_firstlineno
-        extra = {'func_name': module_func_name, 'func_lino': func_line_number}
+        func_name = frame.f_code.co_name
+        func_line_number = frame.f_lineno
+        file_name = os.path.basename(frame.f_code.co_filename)
+        extra = {'func_name': func_name + "()", 'func_lino': func_line_number, 'file_name': file_name}
         self.logger.log(level, msg, extra=extra)
 
     def _archive_older_logfiles(self):
@@ -109,4 +105,4 @@ class Logger(metaclass=SingletonMeta):
         self._log_with_func_name(logging.CRITICAL, message)
 
 
-LOGGER = Logger()
+LOGGER = Logger(logging.DEBUG)
