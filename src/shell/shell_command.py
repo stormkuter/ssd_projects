@@ -3,7 +3,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from src.common import path
 from src.common.logger import LOGGER
-from src.common.ssd_config import NUM_LBAS, MAX_ERASE_SIZE
+from src.common.ssd_config import NUM_LBAS, MAX_ERASE_SIZE, MIN_LBA
 
 
 class ReturnObject:
@@ -47,13 +47,15 @@ class ReadCommand(ICommand):
 class EraseCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
         # system call erase
-        lba = int(args[0])
-        size = min(int(args[1]), NUM_LBAS)
+        lba, size = int(args[0]), int(args[1])
+
+        if lba < MIN_LBA: raise Exception("Invalid LBA Exception")
+        if size > NUM_LBAS: raise Exception("Invalid Size Exception")
 
         while size > MAX_ERASE_SIZE:
             self._system_call_ssd('E', lba, MAX_ERASE_SIZE)
-            size = size - MAX_ERASE_SIZE
-            lba = lba + MAX_ERASE_SIZE
+            size -= MAX_ERASE_SIZE
+            lba += MAX_ERASE_SIZE
         self._system_call_ssd('E', lba, size)
 
         return ReturnObject(self._ssd_sp.returncode, None)
