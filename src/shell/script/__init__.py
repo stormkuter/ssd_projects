@@ -52,7 +52,7 @@ class TestAppBase:
         return self.__erase_range.execute(start_lba, end_lba)
 
     def get_random_lba(self, start_lba=ssd_config.MIN_LBA, end_lba=ssd_config.MAX_LBA):
-        return random.randrange(start_lba, end_lba)
+        return random.randrange(start_lba, end_lba + 1)
 
     def get_random_lba_range(self, size=ssd_config.COMMAND_BUFFER_SIZE):
         start_lba = random.randint(ssd_config.MIN_LBA, ssd_config.MAX_LBA - size + 1)
@@ -60,7 +60,7 @@ class TestAppBase:
         return [start_lba, end_lba]
 
     def get_random_value(self, min_value=ssd_config.MIN_VALUE, max_value=ssd_config.MAX_VALUE):
-        value = random.randrange(min_value, max_value)
+        value = random.randrange(min_value, max_value + 1)
         value_str = "0x" + hex(value)[2:].zfill(8).upper()
         return value_str
 
