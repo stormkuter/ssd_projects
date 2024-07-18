@@ -23,51 +23,7 @@ class Shell:
 
     def run(self):
         if len(self.__args) == 2:
-            LOGGER.setup_handler(True)
-
-            directory, filename = os.path.split(self.__args[1])
-            if not directory:
-                directory = path.SOURCE_SCRIPT_DIR
-
-            run_list_file_path = os.path.join(directory, self.__args[1])
-
-            try:
-                run_list_file = open(run_list_file_path, "r")
-            except Exception:
-                print("No Exist Scenario File!")
-                return
-
-            while True:
-                test_scenario = run_list_file.readline().strip()
-                if not test_scenario:
-                    break
-                # 중복 코드
-                modules = test_scripts.list_modules()
-
-                if test_scenario in modules:
-                    print(f"{test_scenario} --- Run...", end="", flush=True)
-                    package_name = "src.shell.script"
-                    module_name = test_scenario
-
-                    full_module_name = f"{package_name}.{module_name}"
-                    module = importlib.import_module(full_module_name)
-
-                    if hasattr(module, "main"):
-                        func = getattr(module, "main")
-                        if callable(func):
-                            ret: ReturnObject = func()
-                            if ret.err != 0:
-                                print("Fail!")
-                                run_list_file.close()
-                                return
-                            print("Pass")
-                        else:
-                            LOGGER.debug(f"{full_module_name}.main() is not callable.")
-                    else:
-                        LOGGER.debug(f"{full_module_name}.main() is not found.")
-
-            run_list_file.close()
-            return
+            return self._run_test_script()
 
         LOGGER.debug('================= SSD Shell Started! =================')
 
@@ -86,25 +42,53 @@ class Shell:
                 modules = test_scripts.list_modules()
 
                 if input_operation in modules:
-                    package_name = "src.shell.script"
-                    module_name = input_operation
-
-                    full_module_name = f"{package_name}.{module_name}"
-                    module = importlib.import_module(full_module_name)
-
-                    if hasattr(module, "main"):
-                        func = getattr(module, "main")
-                        if callable(func):
-                            func()
-                        else:
-                            LOGGER.debug(f"{full_module_name}.main() is not callable.")
-                    else:
-                        LOGGER.debug(f"{full_module_name}.main() is not found.")
+                    self._excute_tc_scenario(input_operation)
                 else:
                     create_shell_command(input_operation).execute(*user_inputs[1:])
 
             except Exception as e:
                 LOGGER.critical("Shell fail: " + str(e))
+
+    def _run_test_script(self):
+        LOGGER.setup_handler(True)
+        run_list_file_path = os.path.join(path.TEST_BASE_DIR, self.__args[1])
+        try:
+            run_list_file = open(run_list_file_path, "r")
+        except Exception:
+            print("No Exist Scenario File!")
+            return
+        while True:
+            test_scenario = run_list_file.readline().strip()
+            if not test_scenario:
+                break
+
+            modules = test_scripts.list_modules()
+            if test_scenario in modules:
+                print(f"{test_scenario} --- Run...", end="", flush=True)
+                ret: ReturnObject = self._excute_tc_scenario(test_scenario)
+                if ret.err != 0:
+                    print("Fail!")
+                    run_list_file.close()
+                    return
+                print("Pass")
+        run_list_file.close()
+        return
+
+    def _excute_tc_scenario(self, tc):
+        package_name = "src.shell.script"
+        module_name = tc
+
+        full_module_name = f"{package_name}.{module_name}"
+        module = importlib.import_module(full_module_name)
+
+        if hasattr(module, "main"):
+            func = getattr(module, "main")
+            if callable(func):
+                return func()
+            else:
+                LOGGER.debug(f"{full_module_name}.main() is not callable.")
+        else:
+            LOGGER.debug(f"{full_module_name}.main() is not found.")
 
     def _get_user_input(self):
         try:
