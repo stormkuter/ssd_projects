@@ -57,10 +57,10 @@ class CommandBuffer:
             self.update_file()
 
         if op_code == OpCode.ERASE:
-            start_lba, end_lba = args[1:3]
-            end_lba = start_lba + end_lba
+            start_lba, size = int(args[1]), int(args[2])
+            end_lba = start_lba + size
             self.add_command(command, start_lba, end_lba)
-            for lba in range(int(start_lba), int(end_lba)):
+            for lba in range(start_lba, end_lba):
                 self.update_temp_storage(str(lba), ERASE_VALUE)
 
         if op_code == OpCode.FLUSH:
