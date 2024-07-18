@@ -26,8 +26,10 @@ class SsdCommand(ABC):
 
     def flush(self):
         self.command_buffer.flush()
+        self.command_buffer.update_file()
         command_list = self.command_buffer.get_commands_requiring_save()
         self.excute_command_list(command_list)
+
 
     def excute_command_list(self, command_list: list):
         for command in command_list:
@@ -46,8 +48,7 @@ class SsdCommand(ABC):
         self.fil.write_lba(lba, self.to_upper(value))
 
     def erase(self, start_lba: str, size: str):
-        for lba in (start_lba, size):
-            self.fil.erase_lba()
+        self.fil.erase_lba(start_lba, size)
 
     def to_upper(self, value: str):
         return value[:2] + value[2:].upper()
@@ -62,12 +63,12 @@ class SsdCommand(ABC):
             lba = int(lba)
         else:
             raise ValueError(f"입력된 주소값이 잘못 되었습니다.: {lba}")
-        
+
         if (self.MIN_ADDRESS > lba) or (lba > self.MAX_ADDRESS):
             raise ValueError(f"입력된 주소값이 범위를 벗어났습니다.: {lba}")
 
     def validation_of_value(self, value: str):
-        if len(value) != 10:
+        if len(value) == 10:
             try:
                 value = int(value, 16)
             except:
@@ -97,12 +98,11 @@ class SsdReadCommand(SsdCommand):
 
     def execute(self):
         self.validate_args()
-        try:
-            # buffered_data = self.__command_buffer.execute(self.lba)
-            buffered_data = self.command_buffer.buffer_read(self.lba)
+        if self.command_buffer.is_value_present(self.lba):
+            read_value = self.command_buffer.get_last_value(self.lba)
             with open(DATA_FILE_RESULT, "w") as f:
-                f.write(buffered_data)
-        except ValueError as ve:
+                f.write(read_value)
+        else:
             self.fil.read_lba(self.lba)
 
     def validate_args(self):
@@ -117,6 +117,7 @@ class SsdWriteCommand(SsdCommand):
 
     def execute(self):
         self.validate_args()
+        self.value = self.value[:2] + self.value[2:].upper()
         if self.command_buffer.is_full_commands():
             self.flush()
         self.command_buffer.add_command("W", self.lba, self.value)
