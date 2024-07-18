@@ -31,13 +31,13 @@ class TestAppBase:
         return self.__full_read.execute()
 
     def flush(self):
-        return self.__flush()
+        return self.__flush.execute()
 
     def erase(self, start_lba, number_of_logical_blocks):
-        return self.__erase(start_lba, number_of_logical_blocks)
+        return self.__erase.execute(start_lba, number_of_logical_blocks)
 
     def erase_range(self, start_lba, end_lba):
-        return self.__erase_range(start_lba, end_lba)
+        return self.__erase_range.execute(start_lba, end_lba)
 
 
 def list_modules():
