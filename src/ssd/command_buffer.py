@@ -109,8 +109,6 @@ class CommandBuffer:
 
             last_command_idx = lba
 
-        print(self.commands_to_return)
-        print(temp_command_list)
         if len(self.commands_to_return) > len(temp_command_list):
             self.commands_to_return = temp_command_list
         self.buffer_data = INIT_BUFFER_DATA
