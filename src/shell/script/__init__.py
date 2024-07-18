@@ -17,6 +17,16 @@ class TestAppBase:
         self.__flush = create_shell_command("flush")
         self.__erase = create_shell_command("erase")
         self.__erase_range = create_shell_command("erase_range")
+        self.__set_up()
+
+    def __del__(self):
+        self.__tear_down()
+
+    def __set_up(self):
+        self.flush()
+
+    def __tear_down(self):
+        self.flush()
 
     def write(self, lba, value):
         return self.__write.execute(lba, value)
