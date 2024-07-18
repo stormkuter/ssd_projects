@@ -93,27 +93,30 @@ class CommandBuffer:
         self.commands_to_return = self.buffer_data["commands"]
         last_erase_command = None
         temp_command_list = []
-        last_command_idx = 0
-        for lba in range(100):
-            if len(self.buffer_data["tempStorage"][lba]) == 0:
+        last_valid_lba = 0
+        is_continuous = True
+        for now_lba in range(100):
+            if len(self.buffer_data["tempStorage"][now_lba]) == 0:
+                is_continuous = False
                 continue
-            last_value = self.buffer_data["tempStorage"][lba][-1]
+            last_value = self.buffer_data["tempStorage"][now_lba][-1]
 
             if last_value == ERASE_VALUE:
-                if last_erase_command is None:
-                    last_erase_command = [OpCode.ERASE.value, str(lba), 1]
-                if last_command_idx + 1 == lba:
-                    last_erase_command[2] = str(lba - int(last_erase_command[1]) + 1)
+                if is_continuous:
+                    last_erase_command[2] = str(now_lba - int(last_erase_command[1]) + 1)
                 else:
-                    temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
+                    temp_command_list.append([OpCode.ERASE.value, str(now_lba), 1])
                     last_erase_command = temp_command_list[-1]
+                is_continuous = True
             else:
-                temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
+                temp_command_list.append([OpCode.WRITE.value, str(now_lba), last_value])
 
-            last_command_idx = lba
 
+
+        print(self.commands_to_return)
         if len(self.commands_to_return) > len(temp_command_list):
             self.commands_to_return = temp_command_list
+        print(self.commands_to_return)
         self.buffer_data = INIT_BUFFER_DATA
         self.update_file()
 

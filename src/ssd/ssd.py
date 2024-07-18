@@ -69,5 +69,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         LOGGER.debug(str(e))
-        # exit code 협의 필요
         sys.exit(99)
