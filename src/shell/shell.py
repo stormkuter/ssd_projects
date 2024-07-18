@@ -51,7 +51,13 @@ class Shell:
 
     def _run_test_script(self):
         LOGGER.setup_handler(True)
-        run_list_file_path = os.path.join(path.TEST_BASE_DIR, self.__args[1])
+
+        directory, filename = os.path.split(self.__args[1])
+        if not directory:
+            directory = path.SOURCE_SCRIPT_DIR
+
+        run_list_file_path = os.path.join(directory, self.__args[1])
+
         try:
             run_list_file = open(run_list_file_path, "r")
         except Exception:
