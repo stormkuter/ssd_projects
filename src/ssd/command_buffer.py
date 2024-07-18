@@ -91,6 +91,7 @@ class CommandBuffer:
     # TODO:: Refactoring 필수 대상
     def flush(self):
         self.commands_to_return = self.buffer_data["commands"]
+        last_erase_command = None
         temp_command_list = []
         last_command_idx = 0
         for lba in range(100):
@@ -99,6 +100,8 @@ class CommandBuffer:
             last_value = self.buffer_data["tempStorage"][lba][-1]
 
             if last_value == ERASE_VALUE:
+                if last_erase_command is None:
+                    last_erase_command = [OpCode.ERASE.value, str(lba), 1]
                 if last_command_idx + 1 == lba:
                     last_erase_command[2] = str(lba - int(last_erase_command[1]) + 1)
                 else:
