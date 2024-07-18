@@ -1,34 +1,32 @@
 from src.common.logger import LOGGER
-from src.shell.shell_command import create_shell_command, ReturnObject
 from src.common import ssd_config
+from src.shell.script import TestAppBase, ReturnObject
 
 
-class TestApp:
+class TestApp(TestAppBase):
     def main(self):
         is_mismatched = False
         expected = "0x12345678"
         deprecated = "0xAAAABBBB"
-        write_cmd = create_shell_command('write')
-        read_cmd = create_shell_command('read')
 
         for i in range(30):
             for lba in range(0, 6):
-                write_cmd.execute(lba, deprecated)
+                self.write(lba, deprecated)
 
         for lba in range(0, 6):
-            write_cmd.execute(lba, expected)
+            self.write(lba, expected)
 
         for lba in range(0, 6):
-            read_value = read_cmd.execute(lba).val
+            read_value = self.read(lba).val
             if read_value != expected:
                 LOGGER.debug(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
                 is_mismatched = True
 
         if not is_mismatched:
             LOGGER.debug("Data is written well")
-            return ReturnObject(0, read_value)
+            return ReturnObject(0, None)
         else:
-            return ReturnObject(8, read_value)
+            return ReturnObject(-1, None)
 
 
 def main():
