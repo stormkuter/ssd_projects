@@ -92,33 +92,25 @@ class CommandBuffer:
     def flush(self):
         self.commands_to_return = self.buffer_data["commands"]
         temp_command_list = []
+        last_command_idx = 0
         for lba in range(100):
             if len(self.buffer_data["tempStorage"][lba]) == 0:
                 continue
             last_value = self.buffer_data["tempStorage"][lba][-1]
 
             if last_value == ERASE_VALUE:
-                if len(temp_command_list) == 0 or (temp_command_list[-1][0] != OpCode.ERASE.value):
-                    temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
+                if last_command_idx + 1 == lba:
+                    last_erase_command[2] = str(lba - int(last_erase_command[1]) + 1)
                 else:
-                    temp_command_list[-1][2] += 1
+                    temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
+                    last_erase_command = temp_command_list[-1]
             else:
                 temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
-            #
-            # if len(temp_command_list) == 0:
-            #     if last_value == ERASE_VALUE:
-            #         temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
-            #     else:
-            #         temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
-            #
-            # elif last_value == ERASE_VALUE:
-            #     if temp_command_list[-1][0] == OpCode.ERASE.value:
-            #         temp_command_list[-1][2] += 1
-            #     else:
-            #         temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
-            # else:
-            #     temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
 
+            last_command_idx = lba
+
+        print(self.commands_to_return)
+        print(temp_command_list)
         if len(self.commands_to_return) > len(temp_command_list):
             self.commands_to_return = temp_command_list
         self.buffer_data = INIT_BUFFER_DATA
