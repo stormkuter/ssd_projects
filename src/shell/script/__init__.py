@@ -1,6 +1,7 @@
 import os
 import random
 from src.common import ssd_config
+from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command
 
 
@@ -11,7 +12,7 @@ class ReturnObject:
 
 
 class TestAppBase:
-    def __init__(self):
+    def __init__(self, random_seed=None):
         self.__write = create_shell_command("write")
         self.__read = create_shell_command("read")
         self.__full_write = create_shell_command("fullwrite")
@@ -19,6 +20,13 @@ class TestAppBase:
         self.__flush = create_shell_command("flush")
         self.__erase = create_shell_command("erase")
         self.__erase_range = create_shell_command("erase_range")
+
+        if not random_seed:
+            random_seed = random.random()
+
+        LOGGER.debug(f"======== Start Test (Seed: {random_seed}) ========")
+        random.seed(random_seed)
+
         self.__set_up()
 
     def __del__(self):
