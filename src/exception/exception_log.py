@@ -13,13 +13,3 @@ class ExceptionLog:
         now_time = datetime.datetime.now().strftime("%y-%m-%d %H:%M:%S")
         header = f"[ {now_time} ] "
         return msg + ": " + str(ex)
-
-
-class InvalidCommandException(Exception):
-    def __init__(self, msg: str):
-        super().__init__(msg)
-
-
-class InvalidCommandArgumentException(Exception):
-    def __init__(self, msg: str):
-        super().__init__(msg)
