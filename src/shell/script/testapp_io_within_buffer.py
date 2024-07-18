@@ -23,6 +23,7 @@ class TestApp(TestAppBase):
 
             if opc == 0:
                 ret = self.read(lba)
+                LOGGER.debug(f"[Command {i + 1}] read({lba})")
                 if ret.err:
                     LOGGER.debug(f'Error is occurred with "read {lba}" ({ret.err}, {ret.val})')
                     return ReturnObject(-1, None)
@@ -32,6 +33,7 @@ class TestApp(TestAppBase):
                         return ReturnObject(-1, None)
             elif opc == 1:
                 ret = self.write(lba, value)
+                LOGGER.debug(f"[Command {i + 1}] write({lba}, {value})")
                 if ret.err:
                     LOGGER.debug(f'Error is occurred with "write {lba} {value}" ({ret.err}, {ret.val})')
                     return ReturnObject(-1, None)
@@ -40,6 +42,7 @@ class TestApp(TestAppBase):
 
             elif opc == 2:
                 ret = self.erase(lba, 1)
+                LOGGER.debug(f"[Command {i + 1}] erase({lba}, {1})")
                 if ret.err:
                     LOGGER.debug(f'Error is occurred with "erase {lba} 1" ({ret.err}, {ret.val})')
                     return ReturnObject(-1, None)
