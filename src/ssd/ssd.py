@@ -61,6 +61,7 @@ class Ssd:
 
 if __name__ == "__main__":
     commands = sys.argv
+    LOGGER.setup_handler(True)
     try:
         ssd = Ssd()
         ssd.parse_commands(commands)
