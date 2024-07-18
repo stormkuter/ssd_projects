@@ -2,7 +2,6 @@ import os, sys
 import importlib
 import time
 
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
@@ -11,6 +10,7 @@ import src.shell.script as test_scripts
 from src.common import path
 from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command, ReturnObject
+
 
 class Shell:
 
@@ -24,7 +24,13 @@ class Shell:
     def run(self):
         if len(self.__args) == 2:
             LOGGER.setup_handler(True)
-            run_list_file_path = os.path.join(path.TEST_BASE_DIR, self.__args[1])
+
+            directory, filename = os.path.split(self.__args[1])
+            if not directory:
+                directory = path.SOURCE_SCRIPT_DIR
+
+            run_list_file_path = os.path.join(directory, self.__args[1])
+
             try:
                 run_list_file = open(run_list_file_path, "r")
             except Exception:
