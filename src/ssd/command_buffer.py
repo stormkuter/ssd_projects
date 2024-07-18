@@ -22,7 +22,6 @@ class CommandBuffer:
             try:
                 self.buffer_data = json.load(file)
             except:
-                print(self.buffer_data)
                 json.dump(INIT_BUFFER_DATA, file, ensure_ascii=False, indent=4)
 
     def initialize_file(self):
@@ -98,19 +97,27 @@ class CommandBuffer:
                 continue
             last_value = self.buffer_data["tempStorage"][lba][-1]
 
-            if len(temp_command_list) == 0:
-                if last_value == ERASE_VALUE:
+            if last_value == ERASE_VALUE:
+                if len(temp_command_list) == 0 or (temp_command_list[-1][0] != OpCode.ERASE.value):
                     temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
                 else:
-                    temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
-
-            elif last_value == ERASE_VALUE:
-                if temp_command_list[-1][0] == OpCode.ERASE.value:
                     temp_command_list[-1][2] += 1
-                else:
-                    temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
             else:
                 temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
+            #
+            # if len(temp_command_list) == 0:
+            #     if last_value == ERASE_VALUE:
+            #         temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
+            #     else:
+            #         temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
+            #
+            # elif last_value == ERASE_VALUE:
+            #     if temp_command_list[-1][0] == OpCode.ERASE.value:
+            #         temp_command_list[-1][2] += 1
+            #     else:
+            #         temp_command_list.append([OpCode.ERASE.value, str(lba), 1])
+            # else:
+            #     temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
 
         if len(self.commands_to_return) > len(temp_command_list):
             self.commands_to_return = temp_command_list
