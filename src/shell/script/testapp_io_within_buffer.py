@@ -47,7 +47,7 @@ class TestApp(TestAppBase):
                     LOGGER.debug(f'Error is occurred with "erase {lba} 1" ({ret.err}, {ret.val})')
                     return ReturnObject(-1, None)
                 else:
-                    expected[lba] = ssd_config.ERASED_VALUE
+                    expected[lba] = "0x" + hex(ssd_config.ERASED_VALUE)[2:].zfill(8)
 
         return ReturnObject(0, None)
 
