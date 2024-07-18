@@ -62,6 +62,7 @@ class CommandBuffer:
             self.add_command(command, start_lba, end_lba)
             for lba in range(start_lba, end_lba):
                 self.update_temp_storage(str(lba), ERASE_VALUE)
+            self.update_file()
 
         if op_code == OpCode.FLUSH:
             self.flush()
