@@ -39,6 +39,8 @@ class ReadCommand(ICommand):
 
         with open(path.DATA_FILE_RESULT, "r") as result_file:
             ret = result_file.readline()
+
+        if not self._ssd_sp.returncode:
             LOGGER.debug(ret)
 
         return ReturnObject(self._ssd_sp.returncode, ret)
