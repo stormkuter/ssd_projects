@@ -16,6 +16,8 @@ class TestApp(TestAppBase):
         for lba in range(lba_range[0], lba_range[1] + 1):
             expected[lba] = init_value
 
+        LOGGER.debug(f"expected : {expected}")
+
         for i in range(5 * ssd_config.COMMAND_BUFFER_SIZE):
             opc = random.randrange(0, 4)
             lba = self.get_random_lba(lba_range[0], lba_range[1])
