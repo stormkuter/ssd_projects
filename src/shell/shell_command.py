@@ -49,8 +49,8 @@ class EraseCommand(ICommand):
         # system call erase
         lba, size = int(args[0]), int(args[1])
 
-        if lba < MIN_LBA: raise Exception("Invalid LBA Exception")
-        if size > NUM_LBAS: raise Exception("Invalid Size Exception")
+        if lba < MIN_LBA: return ReturnObject(-1, None)
+        if size > NUM_LBAS: return ReturnObject(-1, None)
 
         while size > MAX_ERASE_SIZE:
             self._system_call_ssd('E', lba, MAX_ERASE_SIZE)
@@ -70,18 +70,27 @@ class FlushCommand(ICommand):
 
 class FullWriteCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
+        ret = ReturnObject(0, None)
+
         write_cmd = WriteCommand()
         for lba in range(NUM_LBAS):
-            ret = write_cmd.execute(lba, *args)
+            write_ret = write_cmd.execute(lba, *args)
+            if write_ret.err: ret = write_ret
+
         return ret
 
 
 class FullReadCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
+        ret = ReturnObject(0, None)
+
         read_cmd = ReadCommand()
         for lba in range(NUM_LBAS):
-            ret = read_cmd.execute(lba)
-        return ret
+            read_ret = read_cmd.execute(lba)
+            if read_ret.err: ret = read_ret
+
+        if ret.err: return ret
+        return ReturnObject(0, read_ret.val)
 
 
 class EraseRangeCommand(ICommand):
@@ -90,8 +99,8 @@ class EraseRangeCommand(ICommand):
         try:
             lba = args[0]
             size = str(int(args[1]) - int(args[0]))
-        except IndexError as e:
-            raise Exception("Invalid Argument Exception")
+        except Exception as e:
+            return ReturnObject(-1, None)
 
         return erase_cmd.execute(lba, size)
 
