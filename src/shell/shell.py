@@ -47,7 +47,8 @@ class Shell:
                     create_shell_command(input_operation).execute(*user_inputs[1:])
 
             except Exception as e:
-                LOGGER.critical("Shell fail: " + str(e))
+                LOGGER.critical(f"Shell fail: [{type(e).__name__}] {str(e)}")
+
 
     def _run_test_script(self):
         LOGGER.setup_handler(True)
