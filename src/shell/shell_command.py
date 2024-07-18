@@ -3,8 +3,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from src.common import path
 from src.common.logger import LOGGER
-
-MAX_LBA_LEN = 100
+from src.common.ssd_config import NUM_LBAS, MAX_ERASE_SIZE
 
 
 class ReturnObject:
@@ -48,7 +47,15 @@ class ReadCommand(ICommand):
 class EraseCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
         # system call erase
-        self._system_call_ssd('E', *args)
+        lba = int(args[0])
+        size = min(int(args[1]), NUM_LBAS)
+
+        while size > MAX_ERASE_SIZE:
+            self._system_call_ssd('E', lba, MAX_ERASE_SIZE)
+            size = size - MAX_ERASE_SIZE
+            lba = lba + MAX_ERASE_SIZE
+        self._system_call_ssd('E', lba, size)
+
         return ReturnObject(self._ssd_sp.returncode, None)
 
 
@@ -58,10 +65,11 @@ class FlushCommand(ICommand):
         self._system_call_ssd('F', *args)
         return ReturnObject(self._ssd_sp.returncode, None)
 
+
 class FullWriteCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
         write_cmd = WriteCommand()
-        for lba in range(MAX_LBA_LEN):
+        for lba in range(NUM_LBAS):
             ret = write_cmd.execute(lba, *args)
         return ret
 
@@ -69,7 +77,7 @@ class FullWriteCommand(ICommand):
 class FullReadCommand(ICommand):
     def execute(self, *args) -> ReturnObject:
         read_cmd = ReadCommand()
-        for lba in range(MAX_LBA_LEN):
+        for lba in range(NUM_LBAS):
             ret = read_cmd.execute(lba)
         return ret
 
@@ -97,7 +105,8 @@ class HelpCommand(ICommand):
         LOGGER.debug("help               : manual")
         LOGGER.debug("fullwrite [VAL]    : write all val(ex. fullwrite 0xAAAABBBB")
         LOGGER.debug("fullread           : read all val on LBA")
-        LOGGER.debug("erase_range [START_LBA] [END_LBA] : erase val from START_LBA to END_LBA size (ex. erase_rage 10 15)")
+        LOGGER.debug(
+            "erase_range [START_LBA] [END_LBA] : erase val from START_LBA to END_LBA size (ex. erase_rage 10 15)")
 
         return ReturnObject(0, None)
 
