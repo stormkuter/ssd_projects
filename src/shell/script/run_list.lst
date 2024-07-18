@@ -2,4 +2,5 @@ testapp1
 testapp2
 testapp_invalid_lba
 testapp_invalid_value
+testapp_io_over_buffer
 testapp_io_within_buffer
