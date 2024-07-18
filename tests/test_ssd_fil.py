@@ -4,6 +4,7 @@ import os
 import shutil
 
 from src.common import ssd_config
+from src.common.path import *
 from src.ssd.fil import FlashInterfaceLayer
 
 INIT_VALUE = '0x00000000'
@@ -19,9 +20,9 @@ class MyTestCase(unittest.TestCase):
         shutil.rmtree(os.path.join(os.path.dirname(__file__), 'data'), ignore_errors=True)
 
         self.sut = FlashInterfaceLayer(True)
-        self.folder_path = self.sut.get_folder_path()
-        self.nand_file_path = self.sut.get_nand_file_path()
-        self.result_file_path = self.sut.get_result_file_path()
+        self.folder_path = TEST_BASE_DIR
+        self.nand_file_path = TEST_DATA_FILE_NAND
+        self.result_file_path = TEST_DATA_FILE_RESULT
 
     def test_folder_create(self):
         self.check_folder_exist(self.folder_path)
@@ -42,7 +43,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(read_data[0], INIT_VALUE)
 
     def test_write_lba_success(self):
-        self.sut.enable_cache()
         self.sut.write_lba(TEST_ADDRESS, TEST_VALUE)
 
         self.assertEqual(self.sut.read_lba(TEST_ADDRESS), TEST_VALUE)
@@ -51,7 +51,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(self.sut.read_lba(TEST_ADDRESS), self.get_file_data(self.result_file_path)[0])
 
     def test_erase_lba_success(self):
-        self.sut.enable_cache()
         for i in range(int(TEST_SIZE)):
             self.sut.write_lba(str(int(TEST_ADDRESS)+i), str(hex(int(TEST_VALUE, 16)+i)))
 
