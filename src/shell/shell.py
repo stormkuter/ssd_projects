@@ -45,7 +45,7 @@ class Shell:
                 modules = test_scripts.list_modules()
 
                 if test_scenario in modules:
-                    print(f"{test_scenario} --- Run...", end="")
+                    print(f"{test_scenario} --- Run...", end="", flush=True)
                     package_name = "src.shell.script"
                     module_name = test_scenario
 
