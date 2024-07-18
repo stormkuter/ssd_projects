@@ -2,7 +2,6 @@ import os, sys
 import importlib
 import time
 
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
@@ -11,6 +10,7 @@ import src.shell.script as test_scripts
 from src.common import path
 from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command, ReturnObject
+
 
 class Shell:
 
@@ -39,7 +39,7 @@ class Shell:
                 modules = test_scripts.list_modules()
 
                 if test_scenario in modules:
-                    print(f"{test_scenario} --- Run...", end="")
+                    print(f"{test_scenario} --- Run...", end="", flush=True)
                     package_name = "src.shell.script"
                     module_name = test_scenario
 
