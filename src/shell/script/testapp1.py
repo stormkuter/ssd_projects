@@ -1,28 +1,26 @@
 from src.common.logger import LOGGER
-from src.shell.shell_command import create_shell_command, ReturnObject
 from src.common import ssd_config
+from src.shell.script import TestAppBase, ReturnObject
 
 
-class TestApp:
+class TestApp(TestAppBase):
     def main(self):
         is_mismatched = False
         expected = "0x12345678"
 
-        fullwrite_cmd = create_shell_command('fullwrite')
-        fullwrite_cmd.execute(expected)
+        self.full_write(expected)
 
-        read_cmd = create_shell_command('read')
         for lba in range(ssd_config.NUM_LBAS):
-            read_value = read_cmd.execute(lba).val
+            read_value = self.read(lba).val
             if read_value != expected:
                 LOGGER.debug(f"[WARN] Data mismatch (expected: {expected}, real: {read_value})")
                 is_mismatched = True
 
         if not is_mismatched:
             LOGGER.debug("Data is written well")
-            return ReturnObject(0, read_value)
+            return ReturnObject(0, None)
         else:
-            return ReturnObject(7, read_value)
+            return ReturnObject(-1, None)
 
 
 def main():
