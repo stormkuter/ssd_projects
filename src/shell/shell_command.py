@@ -3,7 +3,6 @@ import subprocess
 from abc import ABC, abstractmethod
 from src.common import path
 from src.common.logger import LOGGER
-from src.exception.exception_log import InvalidCommandException, InvalidCommandArgumentException
 
 MAX_LBA_LEN = 100
 
@@ -82,7 +81,7 @@ class EraseRangeCommand(ICommand):
             lba = args[0]
             size = str(int(args[1]) - int(args[0]))
         except IndexError as e:
-            raise InvalidCommandArgumentException("Invalid Argument Exception")
+            raise Exception("Invalid Argument Exception")
 
         return erase_cmd.execute(lba, size)
 
@@ -121,4 +120,4 @@ def create_shell_command(operation):
     elif operation == 'help':
         return HelpCommand()
 
-    raise InvalidCommandException("Invalid Command Exception")
+    raise Exception("Invalid Command Exception")
