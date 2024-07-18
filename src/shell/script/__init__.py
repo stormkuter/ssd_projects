@@ -22,7 +22,7 @@ class TestAppBase:
         self.__erase_range = create_shell_command("erase_range")
 
         if not random_seed:
-            random_seed = random.random()
+            random_seed = random.randint(0, 100)
 
         LOGGER.debug(f"======== Start Test (Seed: {random_seed}) ========")
         random.seed(random_seed)
