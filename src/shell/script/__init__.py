@@ -14,6 +14,9 @@ class TestAppBase:
         self.__read = create_shell_command("read")
         self.__full_write = create_shell_command("fullwrite")
         self.__full_read = create_shell_command("fullread")
+        self.__flush = create_shell_command("flush")
+        self.__erase = create_shell_command("erase")
+        self.__erase_range = create_shell_command("erase_range")
 
     def write(self, lba, value):
         return self.__write.execute(lba, value)
@@ -26,6 +29,15 @@ class TestAppBase:
 
     def full_read(self):
         return self.__full_read.execute()
+
+    def flush(self):
+        return self.__flush()
+
+    def erase(self, start_lba, number_of_logical_blocks):
+        return self.__erase(start_lba, number_of_logical_blocks)
+
+    def erase_range(self, start_lba, end_lba):
+        return self.__erase_range(start_lba, end_lba)
 
 
 def list_modules():
