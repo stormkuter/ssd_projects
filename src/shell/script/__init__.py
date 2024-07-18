@@ -1,4 +1,6 @@
 import os
+import random
+from src.common import ssd_config
 from src.shell.shell_command import create_shell_command
 
 
@@ -48,6 +50,19 @@ class TestAppBase:
 
     def erase_range(self, start_lba, end_lba):
         return self.__erase_range.execute(start_lba, end_lba)
+
+    def get_random_lba(self, start_lba=ssd_config.MIN_LBA, end_lba=ssd_config.MAX_LBA):
+        return random.randrange(start_lba, end_lba)
+
+    def get_random_lba_range(self, size=ssd_config.COMMAND_BUFFER_SIZE):
+        start_lba = random.randint(ssd_config.MIN_LBA, ssd_config.MAX_LBA - size + 1)
+        end_lba = start_lba + size - 1
+        return [start_lba, end_lba]
+
+    def get_random_value(self, min_value=ssd_config.MIN_VALUE, max_value=ssd_config.MAX_VALUE):
+        value = random.randrange(min_value, max_value)
+        value_str = "0x" + hex(value)[2:].zfill(8).upper()
+        return value_str
 
 
 def list_modules():
