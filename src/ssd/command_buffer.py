@@ -112,9 +112,10 @@ class CommandBuffer:
             else:
                 temp_command_list.append([OpCode.WRITE.value, str(lba), last_value])
 
-        self.commands_to_return = min(self.commands_to_return,temp_command_list)
-        self.buffer_data = INIT_BUFFER_DATA
+        if len(self.commands_to_return) > len(temp_command_list):
+            self.commands_to_return = temp_command_list
         self.update_file()
+        self.buffer_data = INIT_BUFFER_DATA
 
     def get_commands_requiring_save(self):
         return self.commands_to_return
