@@ -2,13 +2,12 @@
 import os
 import sys
 
-from src.common.path import RUNNER_MODE_FILE
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
 
 # local
+from src.common.path import RUNNER_MODE_FILE
 from src.common.logger import LOGGER
 from src.ssd.op_code import OpCode
 from src.ssd.ssd_command import SsdCommand, SsdReadCommand, SsdWriteCommand, SsdEraseCommand, SsdFlushCommand
