@@ -2,16 +2,17 @@ import glob
 import inspect
 import logging
 
-import os
+import os, sys
 from datetime import datetime
-from logging.handlers import RotatingFileHandler
-from src.common.path import LOG_FILE_PATH, LOG_DIR_PATH
+
+from concurrent_log_handler import ConcurrentRotatingFileHandler
+from src.common.path import LOG_FILE_PATH, LOG_DIR_PATH, LOG_FILE_SIZE
 
 LOGGING_FORMATTER = logging.Formatter('[%(asctime)s] %(func_name)-30s [%(file_name)s : %(func_lino)-4s] : %(message)s',
                                       datefmt='%Y-%m-%d %H:%M')
 
 
-class CustomRotatingFileHandler(RotatingFileHandler):
+class CustomRotatingFileHandler(ConcurrentRotatingFileHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -46,7 +47,7 @@ class Logger(metaclass=SingletonMeta):
         self.setup_handler()
 
     def create_file_handler(self, log_level=logging.DEBUG):
-        file_handler = CustomRotatingFileHandler(LOG_FILE_PATH, maxBytes=10240, backupCount=1024)
+        file_handler = CustomRotatingFileHandler(LOG_FILE_PATH, maxBytes=LOG_FILE_SIZE, backupCount=1024)
         file_handler.setFormatter(LOGGING_FORMATTER)
         file_handler.setLevel(log_level)
         return file_handler
