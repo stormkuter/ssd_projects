@@ -1,6 +1,7 @@
 import json
 import os
 
+from src.common.logger import LOGGER
 from src.common.path import *
 from src.ssd.op_code import OpCode
 
@@ -8,6 +9,7 @@ INIT_BUFFER_DATA = {"commands": [], "tempStorage": [[] for _ in range(100)]}
 ERASE_VALUE = "-1"
 EMPTY_VALUE = "0x00000000"
 COMMAND_LIMIT = 10
+
 
 class CommandBuffer:
     def __init__(self):
@@ -87,13 +89,11 @@ class CommandBuffer:
     def is_full_commands(self):
         return len(self.buffer_data["commands"]) >= 10
 
-
     # TODO:: Refactoring 필수 대상
     def flush(self):
         self.commands_to_return = self.buffer_data["commands"]
         last_erase_command = None
         temp_command_list = []
-        last_valid_lba = 0
         is_continuous = True
         for now_lba in range(100):
             if len(self.buffer_data["tempStorage"][now_lba]) == 0:
@@ -103,7 +103,8 @@ class CommandBuffer:
 
             if last_value == ERASE_VALUE:
                 if is_continuous:
-                    last_erase_command[2] = str(now_lba - int(last_erase_command[1]) + 1)
+                    if last_erase_command is not None:
+                        last_erase_command[2] = str(now_lba - int(last_erase_command[1]) + 1)
                 else:
                     temp_command_list.append([OpCode.ERASE.value, str(now_lba), 1])
                     last_erase_command = temp_command_list[-1]
@@ -111,12 +112,10 @@ class CommandBuffer:
             else:
                 temp_command_list.append([OpCode.WRITE.value, str(now_lba), last_value])
 
-
-
-        print(self.commands_to_return)
+        LOGGER.debug(self.commands_to_return)
         if len(self.commands_to_return) > len(temp_command_list):
             self.commands_to_return = temp_command_list
-        print(self.commands_to_return)
+        LOGGER.debug(self.commands_to_return)
         self.buffer_data = INIT_BUFFER_DATA
         self.update_file()
 
