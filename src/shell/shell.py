@@ -2,6 +2,8 @@ import os, sys
 import importlib
 import time
 
+from src.common.path import RUNNER_MODE_FILE
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
@@ -16,10 +18,17 @@ class Shell:
 
     def __init__(self, args):
         self.__args = args
+        if len(self.__args) == 2:
+            with open(os.path.join(RUNNER_MODE_FILE), 'w') as f:
+                f.write('')
+            LOGGER.setup_handler(True)
         create_shell_command('flush').execute()
 
     def __del__(self):
         create_shell_command('flush').execute()
+        if os.path.exists(RUNNER_MODE_FILE):
+            os.remove(RUNNER_MODE_FILE)
+        return
 
     def run(self):
         if len(self.__args) == 2:
@@ -51,8 +60,6 @@ class Shell:
 
 
     def _run_test_script(self):
-        LOGGER.setup_handler(True)
-
         directory, filename = os.path.split(self.__args[1])
         if not directory:
             directory = path.SOURCE_SCRIPT_DIR

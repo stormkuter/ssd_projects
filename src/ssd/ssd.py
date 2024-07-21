@@ -2,6 +2,8 @@
 import os
 import sys
 
+from src.common.path import RUNNER_MODE_FILE
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
@@ -52,16 +54,17 @@ class Ssd:
     def validate_erase_arg(self, commands):
         if len(commands[2:]) != 2:
             raise ValueError("ERASE는 매개 변수 2개")
+
     def validate_flush_arg(self, commands):
         if len(commands) != 2:
             raise ValueError("FLUSH는 매개 변수 0개")
 
 
-
-
 if __name__ == "__main__":
     commands = sys.argv
-    LOGGER.setup_handler(True)
+    if os.path.exists(RUNNER_MODE_FILE):
+        LOGGER.setup_handler(True)
+
     try:
         ssd = Ssd()
         ssd.parse_commands(commands)
