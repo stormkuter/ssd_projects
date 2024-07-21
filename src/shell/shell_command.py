@@ -1,5 +1,6 @@
 import inspect
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 from src.common import path
 from src.common.logger import LOGGER
@@ -22,7 +23,8 @@ class ICommand(ABC):
         pass
 
     def _system_call_ssd(self, operation, *args):
-        self._ssd_sp = subprocess.run(f"python {path.SSD_EXEC} {operation} {' '.join(str(arg) for arg in args)}")
+        command = [sys.executable, path.SSD_EXEC, operation] + [str(arg) for arg in args]
+        self._ssd_sp = subprocess.run(command)
 
 
 class WriteCommand(ICommand):
