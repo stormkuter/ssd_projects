@@ -24,3 +24,4 @@ LOG_DIR_PATH = os.path.join(SOURCE_BASE_DIR, "common")
 LOG_FILE_PATH = os.path.join(LOG_DIR_PATH, "latest.log")
 LOG_FILE_SIZE = 1024 * 10
 
+RUNNER_MODE_FILE = os.path.join(SOURCE_BASE_DIR,"RUNNER")
