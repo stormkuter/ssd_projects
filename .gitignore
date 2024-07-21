@@ -7,3 +7,4 @@ result.txt
 *.log
 *.zip
 *.json
+.*.lock
