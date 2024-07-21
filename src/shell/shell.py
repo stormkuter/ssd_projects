@@ -2,13 +2,12 @@ import os, sys
 import importlib
 import time
 
-from src.common.path import RUNNER_MODE_FILE
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(os.path.dirname(current_directory))
 sys.path.append(parent_directory)
 
 import src.shell.script as test_scripts
+from src.common.path import RUNNER_MODE_FILE
 from src.common import path
 from src.common.logger import LOGGER
 from src.shell.shell_command import create_shell_command, ReturnObject
